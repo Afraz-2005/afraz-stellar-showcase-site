@@ -24,20 +24,20 @@ export const Projects = () => {
   return (
     <section id="projects" className="py-20 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12 text-center">My Projects</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center text-white animate-glow">My Projects</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
+            <Card key={index} className="hover:shadow-lg transition-shadow bg-secondary/50">
               <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
+                <CardTitle className="text-white animate-glow">{project.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">{project.description}</p>
+                <p className="text-white/80 mb-4 animate-glow">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="px-3 py-1 bg-secondary rounded-full text-sm text-gray-700"
+                      className="px-3 py-1 bg-secondary/70 rounded-full text-sm text-white/80 animate-glow"
                     >
                       {tech}
                     </span>
@@ -46,13 +46,13 @@ export const Projects = () => {
                 <div className="flex gap-4">
                   <a
                     href="#"
-                    className="text-primary hover:text-primary/80 transition-colors"
+                    className="text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
                   >
                     <Github className="h-5 w-5" />
                   </a>
                   <a
                     href="#"
-                    className="text-primary hover:text-primary/80 transition-colors"
+                    className="text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
                   >
                     <ExternalLink className="h-5 w-5" />
                   </a>
