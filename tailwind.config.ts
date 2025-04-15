@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -29,12 +28,12 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#6E59A5",
+          DEFAULT: "#8B5CF6", // More vibrant purple
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#E5DEFF",
-          foreground: "#221F26",
+          DEFAULT: "#1A1F2C", // Dark purple for gaming aesthetic
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -68,9 +67,18 @@ export default {
             transform: "translateY(0)",
           },
         },
+        "glow": {
+          "0%, 100%": {
+            textShadow: "0 0 10px rgba(139, 92, 246, 0.5)",
+          },
+          "50%": {
+            textShadow: "0 0 20px rgba(139, 92, 246, 0.8)",
+          },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.5s ease-out forwards",
+        "glow": "glow 2s ease-in-out infinite",
       },
     },
   },

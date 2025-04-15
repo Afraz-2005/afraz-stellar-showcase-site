@@ -8,7 +8,7 @@ import { Contact } from "@/components/Contact";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-secondary">
       <Navbar />
       <Hero />
       <About />
