@@ -7,9 +7,14 @@ export const Navbar = () => {
   const navItems = ["About", "Projects", "Skills", "Contact"];
 
   return (
-    <nav className="fixed w-full bg-white/80 backdrop-blur-sm z-50 py-4">
+    <nav className="fixed w-full bg-transparent backdrop-blur-sm z-50 py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <a href="#" className="text-xl font-bold text-primary">Afraz</a>
+        <a 
+          href="#" 
+          className="text-xl font-bold text-white animate-glow"
+        >
+          Afraz
+        </a>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex gap-8">
@@ -17,7 +22,7 @@ export const Navbar = () => {
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
             >
               {item}
             </a>
@@ -27,7 +32,7 @@ export const Navbar = () => {
         {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-white">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
@@ -37,7 +42,7 @@ export const Navbar = () => {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-lg text-gray-600 hover:text-primary transition-colors"
+                  className="text-lg text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
                 >
                   {item}
                 </a>
