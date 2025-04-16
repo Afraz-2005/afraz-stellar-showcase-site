@@ -5,7 +5,7 @@ import { Code2, Terminal } from "lucide-react";
 
 export const About = () => {
   return (
-    <section id="about" className="py-20 bg-transparent">
+    <section id="about" className="py-20 bg-transparent min-h-screen flex items-center">
       <div className="container mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0 }}
@@ -19,12 +19,11 @@ export const About = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="flex justify-center"
         >
           <Card className="max-w-3xl mx-auto bg-black/50 backdrop-blur border-primary/20">
             <CardContent className="p-6">
-              <div className="flex flex-col items-center gap-4 text-center">
-                <div className="flex gap-4">
+              <div className="flex items-start gap-4">
+                <div className="flex gap-4 mt-1">
                   <Terminal className="w-6 h-6 text-primary" />
                   <Code2 className="w-6 h-6 text-primary" />
                 </div>

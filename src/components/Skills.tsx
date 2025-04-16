@@ -18,7 +18,7 @@ export const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 min-h-screen flex items-center bg-transparent">
+    <section id="skills" className="py-20 min-h-screen bg-transparent">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-12 text-center text-primary animate-glow">Skills</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
