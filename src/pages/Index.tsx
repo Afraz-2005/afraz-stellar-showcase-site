@@ -37,6 +37,17 @@ const Index = () => {
     <div className="min-h-screen bg-transparent overflow-hidden">
       <BackgroundAnimation />
       <Navbar />
+      <div className="fixed left-8 top-1/2 -translate-y-1/2 z-50">
+        <div className="flex flex-col items-center">
+          <a 
+            href="#" 
+            className="writing-vertical text-white text-xs tracking-widest font-mono hover:scale-110 transition-transform animate-glow"
+            style={{ writingMode: 'vertical-lr' }}
+          >
+            • BACK TO INTRO •
+          </a>
+        </div>
+      </div>
       <Carousel className="w-screen">
         <CarouselContent className="-ml-0">
           <CarouselItem className="pl-0 basis-full">
