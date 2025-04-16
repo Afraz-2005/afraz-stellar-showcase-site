@@ -10,6 +10,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
 } from "@/components/ui/carousel";
 import { useEffect } from "react";
 
@@ -53,10 +55,11 @@ const Index = () => {
             <Contact />
           </CarouselItem>
         </CarouselContent>
+        <CarouselPrevious className="fixed left-8 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-primary/20 hover:bg-primary/40 backdrop-blur border-2 border-primary/50" />
+        <CarouselNext className="fixed right-8 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-primary/20 hover:bg-primary/40 backdrop-blur border-2 border-primary/50" />
       </Carousel>
     </div>
   );
 };
 
 export default Index;
-

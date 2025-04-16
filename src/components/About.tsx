@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Code2, Terminal } from "lucide-react";
@@ -18,11 +19,12 @@ export const About = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
+          className="flex justify-center"
         >
           <Card className="max-w-3xl mx-auto bg-black/50 backdrop-blur border-primary/20">
             <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex gap-4 mt-1">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="flex gap-4">
                   <Terminal className="w-6 h-6 text-primary" />
                   <Code2 className="w-6 h-6 text-primary" />
                 </div>

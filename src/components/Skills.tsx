@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 
 export const Skills = () => {
@@ -17,17 +18,17 @@ export const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 bg-transparent">
+    <section id="skills" className="py-20 min-h-screen flex items-center bg-transparent">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-12 text-center text-primary animate-glow">Skills</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {skills.map((skill) => (
-            <Card key={skill.category}>
+            <Card key={skill.category} className="bg-black/50 backdrop-blur">
               <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-4 text-white animate-glow">
+                <h3 className="text-xl font-semibold mb-4 text-white animate-glow text-center">
                   {skill.category}
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 justify-center">
                   {skill.items.map((item) => (
                     <span
                       key={item}
@@ -45,4 +46,3 @@ export const Skills = () => {
     </section>
   );
 };
-
