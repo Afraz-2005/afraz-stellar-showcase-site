@@ -1,11 +1,10 @@
-
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Code2, Terminal } from "lucide-react";
 
 export const About = () => {
   return (
-    <section id="about" className="py-20 bg-secondary">
+    <section id="about" className="py-20 bg-transparent">
       <div className="container mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0 }}

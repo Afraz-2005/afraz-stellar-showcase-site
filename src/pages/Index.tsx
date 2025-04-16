@@ -5,18 +5,58 @@ import { About } from "@/components/About";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/Contact";
+import { BackgroundAnimation } from "@/components/BackgroundAnimation";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import { useEffect } from "react";
 
 const Index = () => {
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const carousel = document.querySelector('[role="region"]');
+      if (carousel) {
+        if (e.deltaY > 0) {
+          carousel.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+        } else {
+          carousel.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-secondary">
+    <div className="min-h-screen bg-transparent overflow-hidden">
+      <BackgroundAnimation />
       <Navbar />
-      <Hero />
-      <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <Carousel className="w-screen">
+        <CarouselContent className="-ml-0">
+          <CarouselItem className="pl-0 basis-full">
+            <Hero />
+          </CarouselItem>
+          <CarouselItem className="pl-0 basis-full">
+            <About />
+          </CarouselItem>
+          <CarouselItem className="pl-0 basis-full">
+            <Projects />
+          </CarouselItem>
+          <CarouselItem className="pl-0 basis-full">
+            <Skills />
+          </CarouselItem>
+          <CarouselItem className="pl-0 basis-full">
+            <Contact />
+          </CarouselItem>
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 };
 
 export default Index;
+
