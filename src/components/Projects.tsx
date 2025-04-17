@@ -1,7 +1,5 @@
+
 import React from 'react';
-import { motion } from "framer-motion";
-import { ProjectCard } from "./ProjectCard";
-import { projectsData } from "@/data/projectsData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink, Github } from "lucide-react";
 
