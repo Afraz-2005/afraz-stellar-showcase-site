@@ -36,7 +36,7 @@ export const Navbar = () => {
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className="bg-secondary/95 border-secondary md:hidden">
             <div className="flex flex-col gap-4 mt-8">
               {navItems.map((item) => (
                 <a
