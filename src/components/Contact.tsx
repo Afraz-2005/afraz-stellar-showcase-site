@@ -14,13 +14,14 @@ export const Contact = () => {
             </p>
             <div className="flex justify-center gap-8">
               <a
-                href="mailto:your.email@example.com"
+                href="mailto:your.mahbirafraz2007@gmail.com"
+                target="_blank"
                 className="text-primary hover:text-primary/80 transition-colors"
               >
                 <Mail className="h-8 w-8" />
               </a>
               <a
-                href="https://github.com/"
+                href="https://github.com/Afraz-2005"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 transition-colors"

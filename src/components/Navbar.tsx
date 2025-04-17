@@ -13,7 +13,7 @@ export const Navbar = () => {
           href="#" 
           className="text-xl font-bold text-white animate-glow"
         >
-          Afraz
+          Afraz.
         </a>
         
         {/* Desktop Navigation */}
