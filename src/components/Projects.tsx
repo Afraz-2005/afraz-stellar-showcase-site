@@ -1,63 +1,39 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Github } from "lucide-react";
+import { motion } from "framer-motion";
+import { ProjectCard } from "./ProjectCard";
+import { projectsData } from "@/data/projectsData";
 
 export const Projects = () => {
-  const projects = [
-    {
-      title: "Project One",
-      description: "A full-stack application with modern technologies",
-      tech: ["React", "Node.js", "MongoDB"],
-    },
-    {
-      title: "Project Two",
-      description: "Mobile-first responsive web application",
-      tech: ["React", "Tailwind CSS", "Firebase"],
-    },
-    {
-      title: "Project Three",
-      description: "Real-time data visualization dashboard",
-      tech: ["TypeScript", "D3.js", "Express"],
-    },
-  ];
-
   return (
-    <section id="projects" className="py-20 bg-transparent">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12 text-center text-white animate-glow">My Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow bg-secondary/50">
-              <CardHeader>
-                <CardTitle className="text-white animate-glow">{project.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/80 mb-4 animate-glow">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tech.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-3 py-1 bg-secondary/70 rounded-full text-sm text-white/80 animate-glow"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-4">
-                  <a
-                    href="#"
-                    className="text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/70 to-black">
+      <div className="fixed left-8 top-1/2 -translate-y-1/2 z-50">
+        <div className="flex flex-col items-center">
+          <a 
+            href="/#" 
+            className="writing-vertical text-white text-xs tracking-widest font-mono hover:scale-110 transition-transform animate-glow"
+            style={{ writingMode: 'vertical-lr', marginBottom: '2rem' }}
+          >
+            • BACK TO INTRO •
+          </a>
+        </div>
+      </div>
+      <div className="container mx-auto px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-white animate-glow">
+            My Projects
+          </h2>
+          <p className="text-lg text-gray-300 mt-4">
+            A selection of projects I've worked on, showcasing my skills and experience.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projectsData.map((project) => (
+            <ProjectCard key={project.id} project={project} />
           ))}
         </div>
       </div>

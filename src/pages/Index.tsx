@@ -40,9 +40,9 @@ const Index = () => {
       <div className="fixed left-8 top-1/2 -translate-y-1/2 z-50">
         <div className="flex flex-col items-center">
           <a 
-            href="#" 
+            href="/#" 
             className="writing-vertical text-white text-xs tracking-widest font-mono hover:scale-110 transition-transform animate-glow"
-            style={{ writingMode: 'vertical-lr' }}
+            style={{ writingMode: 'vertical-lr', marginBottom: '2rem' }}  // Two fingers above the arrow (margin added)
           >
             • BACK TO INTRO •
           </a>
