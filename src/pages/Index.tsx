@@ -1,3 +1,4 @@
+
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
@@ -75,13 +76,13 @@ const Index = () => {
             <Contact />
           </CarouselItem>
         </CarouselContent>
-        <CarouselPrevious className={`fixed left-8 rounded-full border-2 border-primary/50 backdrop-blur ${
-          isMobile ? 'bottom-1/4 top-auto h-10 w-10 bg-secondary/80 hover:bg-secondary' : 
-          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/20 hover:bg-primary/40'
+        <CarouselPrevious className={`fixed left-8 rounded-full border-2 border-primary/20 backdrop-blur ${
+          isMobile ? 'bottom-1/4 top-auto h-10 w-10 bg-secondary/20 hover:bg-secondary/30' : 
+          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20'
         }`} />
-        <CarouselNext className={`fixed right-8 rounded-full border-2 border-primary/50 backdrop-blur ${
-          isMobile ? 'bottom-1/4 top-auto h-10 w-10 bg-secondary/80 hover:bg-secondary' : 
-          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/20 hover:bg-primary/40'
+        <CarouselNext className={`fixed right-8 rounded-full border-2 border-primary/20 backdrop-blur ${
+          isMobile ? 'bottom-1/4 top-auto h-10 w-10 bg-secondary/20 hover:bg-secondary/30' : 
+          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20'
         }`} />
       </Carousel>
     </div>
