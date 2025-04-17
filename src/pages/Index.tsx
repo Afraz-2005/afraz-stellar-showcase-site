@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
@@ -41,20 +40,22 @@ const Index = () => {
       <BackgroundAnimation />
       <Navbar />
       
-      {/* Back to intro button positioned above the arrow */}
-      <div className="fixed left-8 z-50" style={{ 
-        top: isMobile ? '30%' : '40%',
-        transform: 'translateY(-100%)',
-        marginBottom: '20px'
-      }}>
-        <a 
-          href="#" 
-          className="writing-vertical text-white text-xs tracking-widest font-mono hover:scale-110 transition-transform animate-glow"
-          style={{ writingMode: 'vertical-lr' }}
-        >
-          • BACK TO INTRO •
-        </a>
-      </div>
+      {/* Back to intro button positioned above the arrow, hidden in mobile view */}
+      {!isMobile && (
+        <div className="fixed left-8 z-50" style={{ 
+          top: '40%',
+          transform: 'translateY(-100%)',
+          marginBottom: '20px'
+        }}>
+          <a 
+            href="#" 
+            className="writing-vertical text-white text-xs tracking-widest font-mono hover:scale-110 transition-transform animate-glow"
+            style={{ writingMode: 'vertical-lr' }}
+          >
+            • BACK TO INTRO •
+          </a>
+        </div>
+      )}
       
       <Carousel className="w-screen">
         <CarouselContent className="-ml-0">
