@@ -98,11 +98,4 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  .writing-vertical {
-    writing-mode: vertical-lr;
-    text-orientation: mixed;
-    letter-spacing: 0.2em;
-    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
-  }
 }
