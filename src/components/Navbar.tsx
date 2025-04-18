@@ -10,7 +10,7 @@ export const Navbar = () => {
     <nav className="fixed w-full bg-transparent backdrop-blur-sm z-50 py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <a 
-          href="#" 
+          href="#hero" 
           className="text-xl font-bold text-white animate-glow"
         >
           Afraz.

@@ -5,7 +5,7 @@ import { Gamepad2, ArrowRight } from "lucide-react";
 
 export const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/70 to-black">
+    <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-secondary via-secondary/70 to-black">
       <div className="container mx-auto px-4 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -33,8 +33,8 @@ export const Hero = () => {
           transition={{ delay: 0.6, duration: 0.5 }}
         >
           <Button asChild className="bg-primary hover:bg-primary/90 hover:scale-105 transition-all duration-300">
-            <a href="#projects" className="group">
-              View My Work
+            <a href="https:&#x2F;&#x2F;www.canva.com&#x2F;design&#x2F;DAGk9VRzt9k&#x2F;WgZEIaxgX50Zt2RkSuba5Q&#x2F;view?utm_content=DAGk9VRzt9k&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" className="group">
+              View Resume
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </a>
           </Button>

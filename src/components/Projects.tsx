@@ -1,23 +1,24 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Github } from "lucide-react";
+import { link } from "fs";  
+import { ExternalLink, Github, Link } from "lucide-react";
 
 export const Projects = () => {
   const projects = [
     {
-      title: "Project One",
-      description: "A full-stack application with modern technologies",
-      tech: ["React", "Node.js", "MongoDB"],
+      title: "Covid Cross",
+      description: "A full-stack application to track COVID-19 cases",
+      tech: ["React", "Node.js", "SQL"],
     },
     {
-      title: "Project Two",
-      description: "Mobile-first responsive web application",
+      title: "Speechie",
+      description: "Translator with voice integration, Chat bot under development",
       tech: ["React", "Tailwind CSS", "Firebase"],
     },
     {
-      title: "Project Three",
+      title: "A Random Game",
       description: "Real-time data visualization dashboard",
-      tech: ["TypeScript", "D3.js", "Express"],
+      tech: ["HTML5", "JS", "CSS"],
     },
   ];
 
