@@ -6,6 +6,7 @@ import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/Contact";
 import { BackgroundAnimation } from "@/components/BackgroundAnimation";
+import { ProgressBar } from "@/components/ProgressBar";
 import {
   Carousel,
   CarouselContent,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const isMobile = useIsMobile();
@@ -41,7 +43,7 @@ const Index = () => {
       <BackgroundAnimation />
       <Navbar />
       
-      {/* Back to intro button positioned above the arrow, hidden in mobile view */}
+      {/* Back to intro button */}
       {!isMobile && (
         <div className="fixed left-8 z-50" style={{ 
           top: '40%',
@@ -60,31 +62,35 @@ const Index = () => {
       
       <Carousel className="w-screen">
         <CarouselContent className="-ml-0">
-          <CarouselItem className="pl-0 basis-full">
-            <Hero />
-          </CarouselItem>
-          <CarouselItem className="pl-0 basis-full">
-            <About />
-          </CarouselItem>
-          <CarouselItem className="pl-0 basis-full">
-            <Projects />
-          </CarouselItem>
-          <CarouselItem className="pl-0 basis-full">
-            <Skills />
-          </CarouselItem>
-          <CarouselItem className="pl-0 basis-full">
-            <Contact />
-          </CarouselItem>
+          {[Hero, About, Projects, Skills, Contact].map((Component, index) => (
+            <CarouselItem key={index} className="pl-0 basis-full">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Component />
+              </motion.div>
+            </CarouselItem>
+          ))}
         </CarouselContent>
-        <CarouselPrevious className={`fixed left-8 rounded-full border-2 border-primary/20 backdrop-blur text-white ${
-          isMobile ? ' text-white bottom-1/4 top-auto h-10 w-10 bg-secondary/20 hover:bg-secondary/30' : 
-          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20'
-        }`} />
-        <CarouselNext className={`fixed right-8 rounded-full border-2 border-primary/20 backdrop-blur text-white ${
-          isMobile ? 'text-white bottom-1/4 top-auto h-10 w-10 bg-secondary/20 hover:bg-secondary/30' : 
-          'top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20'
-        }`} />
+        
+        {!isMobile && (
+          <>
+            <CarouselPrevious className="fixed left-8 rounded-full border-2 border-primary/20 backdrop-blur text-white top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+            <CarouselNext className="fixed right-8 rounded-full border-2 border-primary/20 backdrop-blur text-white top-1/2 -translate-y-1/2 h-12 w-12 bg-primary/10 hover:bg-primary/20" />
+          </>
+        )}
       </Carousel>
+
+      {isMobile && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 text-white/70 font-['Space_Mono'] text-sm tracking-widest animate-pulse">
+          slide →
+        </div>
+      )}
+
+      <ProgressBar />
     </div>
   );
 };
