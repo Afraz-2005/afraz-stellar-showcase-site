@@ -18,6 +18,8 @@ export const ProgressBar = () => {
     const carousel = document.querySelector('[role="region"]');
     if (carousel) {
       carousel.addEventListener('scroll', handleScroll);
+      // Trigger once to initialize
+      handleScroll();
     }
 
     return () => {
@@ -28,9 +30,9 @@ export const ProgressBar = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full h-1 bg-secondary/20">
+    <div className="fixed bottom-0 left-0 w-full h-2 bg-black/30 z-50">
       <div
-        className="h-full bg-primary/50 backdrop-blur transition-all duration-300"
+        className="h-full bg-primary transition-all duration-300"
         style={{ width: `${progress}%` }}
       />
     </div>
