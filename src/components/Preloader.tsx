@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
@@ -26,18 +26,20 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100]">
       <motion.svg
-        width="200"
-        height="200"
+        width="300"
+        height="300"
         viewBox="0 0 100 100"
         initial="hidden"
         animate="visible"
         style={{ transform: 'rotate(-15deg)' }}
       >
         <motion.path
-          d="M20 20 L80 20 L20 80 L80 80"
+          d="M15 15 L85 15 L15 85 L85 85"
           fill="transparent"
           stroke="#8B5CF6"
-          strokeWidth="4"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           variants={pathVariants}
         />
       </motion.svg>
