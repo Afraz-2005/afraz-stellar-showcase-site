@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Github, Instagram, Mail, Discord } from "lucide-react";
+import { Github, Instagram, Mail, ExternalLink } from "lucide-react";
 
 export const Contact = () => {
   return (
@@ -37,12 +37,12 @@ export const Contact = () => {
                 <Instagram className="h-8 w-8" />
               </a>
               <a
-                href="https://discord.com/"
+                href="https://discord.com/users/your_username"
                 target="_blank"
                 rel="noopener noreferrer" 
                 className="text-primary hover:text-primary/80 transition-colors"
               >
-                <Discord className="h-8 w-8" />
+                <ExternalLink className="h-8 w-8" />
               </a>
             </div>
           </CardContent>
