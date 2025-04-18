@@ -1,33 +1,29 @@
 
 import { useEffect, useState } from 'react';
+import { useCarousel } from "@/components/ui/carousel";
 
 export const ProgressBar = () => {
   const [progress, setProgress] = useState(0);
+  const { api } = useCarousel();
 
   useEffect(() => {
-    const handleScroll = () => {
-      const carouselElement = document.querySelector('[role="region"]');
-      if (carouselElement) {
-        const scrollPosition = carouselElement.scrollLeft;
-        const maxScroll = carouselElement.scrollWidth - carouselElement.clientWidth;
-        const percentage = (scrollPosition / maxScroll) * 100;
-        setProgress(percentage);
-      }
+    if (!api) return;
+
+    const updateProgress = () => {
+      const scrollSnaps = api.scrollSnapList();
+      const selectedSnap = api.selectedScrollSnap();
+      const percentage = (selectedSnap / (scrollSnaps.length - 1)) * 100;
+      setProgress(percentage);
     };
 
-    const carousel = document.querySelector('[role="region"]');
-    if (carousel) {
-      carousel.addEventListener('scroll', handleScroll);
-      // Trigger once to initialize
-      handleScroll();
-    }
+    api.on('select', updateProgress);
+    // Initialize progress
+    updateProgress();
 
     return () => {
-      if (carousel) {
-        carousel.removeEventListener('scroll', handleScroll);
-      }
+      api.off('select', updateProgress);
     };
-  }, []);
+  }, [api]);
 
   return (
     <div className="fixed bottom-0 left-0 w-full h-1 bg-black/30 z-50">
