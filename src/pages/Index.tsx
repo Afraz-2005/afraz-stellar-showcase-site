@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from 'react';
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
@@ -7,6 +7,7 @@ import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/Contact";
 import { BackgroundAnimation } from "@/components/BackgroundAnimation";
 import { ProgressBar } from "@/components/ProgressBar";
+import { Preloader } from "@/components/Preloader";
 import {
   Carousel,
   CarouselContent,
@@ -14,11 +15,11 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import { useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 
 const Index = () => {
+  const [loading, setLoading] = useState(true);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -37,6 +38,10 @@ const Index = () => {
     window.addEventListener('wheel', handleWheel, { passive: false });
     return () => window.removeEventListener('wheel', handleWheel);
   }, []);
+
+  if (loading) {
+    return <Preloader onComplete={() => setLoading(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-transparent overflow-hidden">

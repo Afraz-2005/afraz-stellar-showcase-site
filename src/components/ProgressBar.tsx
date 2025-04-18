@@ -30,10 +30,13 @@ export const ProgressBar = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full h-2 bg-black/30 z-50">
+    <div className="fixed bottom-0 left-0 w-full h-1 bg-black/30 z-50">
       <div
-        className="h-full bg-primary transition-all duration-300"
-        style={{ width: `${progress}%` }}
+        className="h-full bg-primary"
+        style={{ 
+          width: `${progress}%`,
+          transition: 'width 0.3s ease-out'
+        }}
       />
     </div>
   );
