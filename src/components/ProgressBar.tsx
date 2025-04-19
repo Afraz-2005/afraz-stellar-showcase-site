@@ -10,7 +10,7 @@ export const ProgressBar = () => {
       if (carouselElement) {
         const scrollPosition = carouselElement.scrollLeft;
         const maxScroll = carouselElement.scrollWidth - carouselElement.clientWidth;
-        const percentage = (scrollPosition / maxScroll) * 100;
+        const percentage = maxScroll > 0 ? (scrollPosition / maxScroll) * 100 : 0;
         setProgress(percentage);
       }
     };
@@ -18,24 +18,26 @@ export const ProgressBar = () => {
     const carousel = document.querySelector('[role="region"]');
     if (carousel) {
       carousel.addEventListener('scroll', handleScroll);
-      // Trigger once to initialize
+      // Initialize progress
       handleScroll();
-    }
 
-    return () => {
-      if (carousel) {
+      // Handle button clicks
+      const observer = new MutationObserver(handleScroll);
+      observer.observe(carousel, { attributes: true, attributeFilter: ['style'] });
+
+      return () => {
         carousel.removeEventListener('scroll', handleScroll);
-      }
-    };
+        observer.disconnect();
+      };
+    }
   }, []);
 
   return (
     <div className="fixed bottom-0 left-0 w-full h-1 bg-black/30 z-50">
       <div
-        className="h-full bg-primary"
+        className="h-full bg-primary transition-transform duration-300 ease-out origin-left"
         style={{ 
-          width: `${progress}%`,
-          transition: 'width 0.3s ease-out'
+          transform: `scaleX(${progress / 100})`,
         }}
       />
     </div>
