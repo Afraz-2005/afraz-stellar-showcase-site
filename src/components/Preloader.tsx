@@ -1,10 +1,13 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
+  const [isComplete, setIsComplete] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => {
+      setIsComplete(true);
       onComplete();
     }, 3000);
 
@@ -26,7 +29,7 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
       }
     },
     glowing: {
-      filter: "drop-shadow(0 0 2px rgba(255, 255, 255, 0.8))",
+      filter: "drop-shadow(0 0 10px rgba(255, 255, 255, 0.8))",
       transition: {
         delay: 2,
         duration: 0.5,
@@ -35,7 +38,13 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-[100]">
+    <div 
+      className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center z-[100] transition-all duration-500 ${
+        isComplete 
+          ? 'bg-purple-500/30' 
+          : 'bg-black/90'
+      }`}
+    >
       <motion.svg
         width="80vw"
         height="80vh"
