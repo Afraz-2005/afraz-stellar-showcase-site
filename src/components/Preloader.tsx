@@ -47,7 +47,7 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
         <motion.path
           d="M15 15 L85 15 L15 85 L85 85"
           fill="transparent"
-          stroke="#FFFFFF"
+          stroke="#8B5CF6"
           strokeWidth="12"
           strokeLinecap="round"
           strokeLinejoin="round"
