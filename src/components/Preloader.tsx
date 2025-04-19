@@ -26,7 +26,7 @@ export const Preloader = ({ onComplete }: { onComplete: () => void }) => {
       }
     },
     glowing: {
-      filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))",
+      filter: "drop-shadow(0 0 2px rgba(255, 255, 255, 0.8))",
       transition: {
         delay: 2,
         duration: 0.5,
