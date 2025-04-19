@@ -23,6 +23,9 @@ export const Navbar = () => {
       }
     };
 
+    // Initial check to set active section on load
+    handleScroll();
+
     const carousel = document.querySelector('[role="region"]');
     if (carousel) {
       carousel.addEventListener('scroll', handleScroll);
@@ -30,12 +33,18 @@ export const Navbar = () => {
     }
   }, [navItems]);
 
+  // Handle clicking on links to set active section
+  const handleNavClick = (section: string) => {
+    setActiveSection(section);
+  };
+
   return (
     <nav className="fixed w-full bg-transparent backdrop-blur-sm z-50 py-4">
       <div className="container mx-auto px-4 flex justify-between items-center">
         <a 
           href="#hero" 
           className="text-xl font-bold text-white animate-glow"
+          onClick={() => handleNavClick("hero")}
         >
           Afraz.
         </a>
@@ -46,7 +55,10 @@ export const Navbar = () => {
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="relative text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse group"
+              className={`relative text-white transition-colors animate-glow group ${
+                activeSection === item.toLowerCase() ? "text-white" : "text-white/80 hover:text-white"
+              }`}
+              onClick={() => handleNavClick(item.toLowerCase())}
             >
               {item}
               <div 
@@ -73,9 +85,19 @@ export const Navbar = () => {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-lg text-white/80 hover:text-white transition-colors animate-glow hover:animate-pulse"
+                  className={`relative text-lg transition-colors animate-glow group ${
+                    activeSection === item.toLowerCase() ? "text-white" : "text-white/80 hover:text-white"
+                  }`}
+                  onClick={() => handleNavClick(item.toLowerCase())}
                 >
                   {item}
+                  <div 
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-300 ${
+                      activeSection === item.toLowerCase() 
+                        ? 'w-full' 
+                        : 'w-0 group-hover:w-full'
+                    }`}
+                  />
                 </a>
               ))}
             </div>
