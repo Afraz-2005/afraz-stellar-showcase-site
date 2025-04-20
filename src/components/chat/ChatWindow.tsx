@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -12,18 +11,51 @@ interface ChatWindowProps {
 
 export const ChatWindow = ({ onClose }: ChatWindowProps) => {
   const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([
-    { text: "Hi! I'm Afraz.bot. How can I assist you today?", isUser: false }
+    { 
+      text: "Hi! I'm Afraz.bot, your personal AI assistant. I represent Imam Mahbir Afraz, a 20-year-old aspiring programmer from Dhaka, Bangladesh. I'd be happy to tell you more about him or assist you with anything else!", 
+      isUser: false 
+    }
   ]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  const personalInfo = {
+    education: {
+      school: "Academia, Dhaka (8 years)",
+      college: "SFX Greenherald International School and College, Dhaka"
+    },
+    location: "Dhaka, Bangladesh",
+    age: 20,
+    interests: {
+      programming: "Started during COVID out of boredom",
+      music: ["The Weeknd", "Arijit Singh", "Atif Aslam", "Pritom Hasan"],
+      color: "red",
+      food: "all good food"
+    }
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const generateResponse = (userMessage: string) => {
+    const lowerMessage = userMessage.toLowerCase();
+    let response = "I'm a development version of Afraz.bot. Let me help you with information about Imam Mahbir Afraz.";
+
+    if (lowerMessage.includes('education') || lowerMessage.includes('study')) {
+      response = `Afraz studied for 8 years at Academia, Dhaka and completed college from SFX Greenherald International School and College, Dhaka.`;
+    } else if (lowerMessage.includes('music') || lowerMessage.includes('artist')) {
+      response = `Afraz enjoys listening to various artists including The Weeknd, Arijit Singh, Atif Aslam, and Pritom Hasan.`;
+    } else if (lowerMessage.includes('color')) {
+      response = `Afraz's favorite color is red.`;
+    } else if (lowerMessage.includes('food')) {
+      response = `Afraz loves all good food! He's quite the foodie.`;
+    } else if (lowerMessage.includes('programming') || lowerMessage.includes('code')) {
+      response = `Afraz's passion for programming began during the COVID pandemic when he found himself with extra time and got interested in coding.`;
+    } else if (lowerMessage.includes('age')) {
+      response = `Afraz is 20 years old and is currently applying to universities.`;
+    } else if (lowerMessage.includes('live') || lowerMessage.includes('location')) {
+      response = `Afraz lives in Dhaka, Bangladesh.`;
+    }
+
+    return response;
+  };
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -31,10 +63,11 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     setMessages(prev => [...prev, { text: input, isUser: true }]);
     setInput('');
 
-    // Simulate bot response
+    // Generate response based on user input
     setTimeout(() => {
+      const response = generateResponse(input);
       setMessages(prev => [...prev, {
-        text: "I'm a development version of Afraz.bot. While I can show you how the chat interface works, I'm not yet connected to an AI backend.",
+        text: response,
         isUser: false
       }]);
     }, 1000);
@@ -46,6 +79,10 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
       handleSend();
     }
   };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <motion.div
