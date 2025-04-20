@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -28,9 +29,25 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     age: 20,
     interests: {
       programming: "Started during COVID out of boredom",
-      music: ["The Weeknd", "Arijit Singh", "Atif Aslam", "Pritom Hasan"],
+      music: {
+        genres: ["Lofi", "Hindi Classics", "Hollywood Pop", "Bangladeshi Band Songs"],
+        artists: ["The Weeknd", "Arijit Singh", "Atif Aslam", "Pritom Hasan"]
+      },
       color: "red",
-      food: "all good food"
+      food: "all good food",
+      hobbies: {
+        gaming: {
+          fps: ["CS2", "Overwatch", "Fragpunk", "Marvel Rivals", "Valorant"],
+          favoriteGame: "Valorant"
+        },
+        sports: ["Football", "Badminton"],
+        creative: ["Sketching", "Painting", "Playing Guitar", "Singing"]
+      },
+      cars: {
+        interest: "Racing cars",
+        favoriteCar: "Dodge Challenger Hellcat"
+      },
+      tech: ["Keyboard Building", "Gadgets"]
     }
   };
 
@@ -41,17 +58,23 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
     if (lowerMessage.includes('education') || lowerMessage.includes('study')) {
       response = `Afraz studied for 8 years at Academia, Dhaka and completed college from SFX Greenherald International School and College, Dhaka.`;
     } else if (lowerMessage.includes('music') || lowerMessage.includes('artist')) {
-      response = `Afraz enjoys listening to various artists including The Weeknd, Arijit Singh, Atif Aslam, and Pritom Hasan.`;
+      response = `Afraz enjoys a wide variety of music, including lofi, Hindi classics, Hollywood pop, and Bangladeshi band songs. Some of his favorite artists are The Weeknd, Arijit Singh, and Atif Aslam.`;
     } else if (lowerMessage.includes('color')) {
       response = `Afraz's favorite color is red.`;
     } else if (lowerMessage.includes('food')) {
       response = `Afraz loves all good food! He's quite the foodie.`;
+    } else if (lowerMessage.includes('gaming') || lowerMessage.includes('game')) {
+      response = `Afraz is a big fan of FPS games, with Valorant being his absolute favorite. He also plays CS2, Overwatch, Fragpunk, and Marvel Rivals.`;
     } else if (lowerMessage.includes('programming') || lowerMessage.includes('code')) {
       response = `Afraz's passion for programming began during the COVID pandemic when he found himself with extra time and got interested in coding.`;
     } else if (lowerMessage.includes('age')) {
       response = `Afraz is 20 years old and is currently applying to universities.`;
     } else if (lowerMessage.includes('live') || lowerMessage.includes('location')) {
       response = `Afraz lives in Dhaka, Bangladesh.`;
+    } else if (lowerMessage.includes('car') || lowerMessage.includes('racing')) {
+      response = `Afraz loves cars, especially racing cars. His dream car is the Dodge Challenger Hellcat.`;
+    } else if (lowerMessage.includes('hobby') || lowerMessage.includes('interest')) {
+      response = `Afraz has diverse interests! He loves sketching, painting, playing guitar, singing, and is into keyboard building and tech gadgets. He also enjoys sports like football and badminton.`;
     }
 
     return response;
