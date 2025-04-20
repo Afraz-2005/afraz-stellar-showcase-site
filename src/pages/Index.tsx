@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/carousel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
+import { ChatBot } from "@/components/chat/ChatBot";
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
@@ -96,6 +97,7 @@ const Index = () => {
       )}
 
       <ProgressBar />
+      <ChatBot />
     </div>
   );
 };
