@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -37,23 +38,33 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
       programming: "Started during COVID out of boredom",
       music: {
         genres: ["Lofi", "Hindi Classics", "Hollywood Pop", "Bangladeshi Band Songs"],
-        artists: ["The Weeknd", "Arijit Singh", "Atif Aslam", "Pritom Hasan"]
+        artists: ["The Weeknd", "Arijit Singh", "Atif Aslam", "Pritom Hasan", "Shreya Ghoshal", "Ed Sheeran", 
+                 "Charlie Puth", "Mohit Chauhan", "AR Rahman", "KK", "Hridoy Khan", "Afrin Rumey"],
+        bands: ["Level 5", "Warfaze", "Shunno"]
+      },
+      creative: {
+        instruments: ["Guitar"],
+        activities: ["Singing", "Painting", "Sketching"],
+        description: "Considers himself an artist"
       },
       color: "red",
       food: "all good food",
       hobbies: {
         gaming: {
           fps: ["CS2", "Overwatch", "Fragpunk", "Marvel Rivals", "Valorant"],
-          favoriteGame: "Valorant"
+          favoriteGame: "Valorant",
+          esports: {
+            follows: "VCT (Valorant Champions Tour)",
+            athletes: ["TenZ", "Boaster", "Leo", "Tarik", "Zekken", "Sinatraa", "Aspas", "PRX Something"]
+          }
         },
         sports: ["Football", "Badminton"],
-        creative: ["Sketching", "Painting", "Playing Guitar", "Singing"]
+        tech: ["Designing", "Keyboard Building", "PC Components", "Tech Gadgets"]
       },
       cars: {
         interest: "Racing cars",
         favoriteCar: "Dodge Challenger Hellcat"
-      },
-      tech: ["Keyboard Building", "Gadgets"]
+      }
     }
   };
 
@@ -101,26 +112,37 @@ export const ChatWindow = ({ onClose }: ChatWindowProps) => {
       "When Afraz isn't coding, he's probably explaining to his family why he needs another mechanical keyboard."
     ];
 
-    if (lowerMessage.includes('education') || lowerMessage.includes('study')) {
-      response = `Afraz studied for 8 years at Academia, Dhaka and completed college from SFX Greenherald International School and College, Dhaka. ${humorousRemarks[0]}`;
-    } else if (lowerMessage.includes('music') || lowerMessage.includes('artist')) {
-      response = `Afraz enjoys a wide variety of music, including lofi, Hindi classics, Hollywood pop, and Bangladeshi band songs. Some of his favorite artists are The Weeknd, Arijit Singh, and Atif Aslam. His shower concerts are legendary, but audience reviews are mixed!`;
-    } else if (lowerMessage.includes('color')) {
-      response = `Afraz's favorite color is red. Not just any red - the specific red of a sports car going way too fast for his parents' comfort!`;
-    } else if (lowerMessage.includes('food')) {
-      response = `Afraz loves all good food! He's quite the foodie. His philosophy is "if calories don't see you eating them, they don't count." Flawless logic!`;
-    } else if (lowerMessage.includes('gaming') || lowerMessage.includes('game')) {
-      response = `Afraz is a big fan of FPS games, with Valorant being his absolute favorite. He also plays CS2, Overwatch, Fragpunk, and Marvel Rivals. His gaming skills are inversely proportional to how much homework he has!`;
-    } else if (lowerMessage.includes('programming') || lowerMessage.includes('code')) {
-      response = `Afraz's passion for programming began during the COVID pandemic when he found himself with extra time and got interested in coding. He started with "Hello World" and now he's convinced semicolons are just decoration. ${humorousRemarks[1]}`;
+    if (lowerMessage.includes('love') || lowerMessage.includes('like') || lowerMessage.includes('enjoy') || lowerMessage.includes('passion')) {
+      if (lowerMessage.includes('music') || lowerMessage.includes('artist') || lowerMessage.includes('song')) {
+        return `Afraz loves a wide variety of music! He enjoys lofi, Hindi classics, Hollywood pop, and Bangladeshi band songs. His favorite artists include The Weeknd, Arijit Singh, Atif Aslam, Pritom Hasan, Shreya Ghoshal, Ed Sheeran, Charlie Puth, and more. He's also into bands like Level 5, Warfaze, and Shunno. Not just a listener - he plays guitar and sings too!`;
+      } else if (lowerMessage.includes('color')) {
+        return `Afraz's favorite color is red. Not just any red - the specific red of a sports car going way too fast for his parents' comfort!`;
+      } else if (lowerMessage.includes('food')) {
+        return `Afraz loves all good food! He's quite the foodie with no specific favorites - he just appreciates quality cuisine in general. His philosophy is "if calories don't see you eating them, they don't count." Flawless logic!`;
+      } else if (lowerMessage.includes('gaming') || lowerMessage.includes('game') || lowerMessage.includes('valorant')) {
+        return `Afraz is passionate about FPS games, with Valorant being his absolute favorite! He also plays CS2, Overwatch, Fragpunk, and Marvel Rivals. He follows the Valorant Champions Tour (VCT) and admires pro players like TenZ (his big inspiration), Boaster, Leo, Tarik, Zekken, Sinatraa, and Aspas. His gaming skills are inversely proportional to how much homework he has!`;
+      } else if (lowerMessage.includes('programming') || lowerMessage.includes('code')) {
+        return `Afraz's passion for programming began during the COVID pandemic when he found himself with extra time and got interested in coding. What started as a way to combat boredom turned into a genuine passion! ${humorousRemarks[1]}`;
+      } else if (lowerMessage.includes('car')) {
+        return `Afraz loves cars, especially racing cars! His dream car is the Dodge Challenger Hellcat. He probably spends more time customizing virtual cars than he'll ever spend in real ones!`;
+      } else if (lowerMessage.includes('hobby') || lowerMessage.includes('interest')) {
+        return `Afraz has incredibly diverse interests! He's into music (playing guitar and singing), art (painting and sketching), gaming (especially Valorant), cars (particularly the Dodge Challenger Hellcat), tech (building mechanical keyboards and exploring PC components), and sports (football and badminton). ${humorousRemarks[2]} When he's not pursuing one of these hobbies, he's probably discovering a new one!`;
+      } else if (lowerMessage.includes('keyboard') || lowerMessage.includes('tech') || lowerMessage.includes('gadget')) {
+        return `Afraz is a tech enthusiast with a particular passion for mechanical keyboards and PC components! He loves building custom keyboards and exploring new gadgets. ${humorousRemarks[3]} His tech interests also extend to design concepts and keeping up with the latest innovations.`;
+      } else if (lowerMessage.includes('art') || lowerMessage.includes('paint') || lowerMessage.includes('sketch')) {
+        return `Afraz considers himself an artist! He loves sketching and painting, and he's quite skilled at it. His creative side extends beyond visual arts to music as well - he plays guitar and sings. It's unclear if his artistic talents extend to crafting elegant code, but he's certainly trying!`;
+      } else {
+        // Generic "what does Afraz love" question
+        return `Afraz has many passions! He loves programming (started during COVID), music (both listening to artists like The Weeknd and making his own on guitar), art (painting and sketching), FPS gaming (especially Valorant), cars (particularly the Dodge Challenger Hellcat), mechanical keyboards, and tech gadgets. He's a creative soul with diverse interests ranging from esports to building PCs. Anything specific about his interests you'd like to know?`;
+      }
+    }
+    
+    if (lowerMessage.includes('education') || lowerMessage.includes('study') || lowerMessage.includes('school') || lowerMessage.includes('college')) {
+      response = `Afraz studied for 8 years at Academia, Dhaka and completed college from SFX Greenherald International School and College, Dhaka. ${humorousRemarks[0]} He's currently applying to universities to further his education.`;
     } else if (lowerMessage.includes('age')) {
       response = `Afraz is 20 years old and is currently applying to universities. In programming years, that's about 5 caffeine-fueled project deadlines old!`;
-    } else if (lowerMessage.includes('live') || lowerMessage.includes('location')) {
+    } else if (lowerMessage.includes('live') || lowerMessage.includes('location') || lowerMessage.includes('from')) {
       response = `Afraz lives in Dhaka, Bangladesh. A place where the traffic gives him plenty of time to think about code optimization!`;
-    } else if (lowerMessage.includes('car') || lowerMessage.includes('racing')) {
-      response = `Afraz loves cars, especially racing cars. His dream car is the Dodge Challenger Hellcat. He probably spends more time customizing virtual cars than he'll ever spend in real ones!`;
-    } else if (lowerMessage.includes('hobby') || lowerMessage.includes('interest')) {
-      response = `Afraz has diverse interests! He loves sketching, painting, playing guitar, singing, and is into keyboard building and tech gadgets. ${humorousRemarks[2]} He also enjoys sports like football and badminton when not busy collecting hobbies.`;
     } else if (lowerMessage.includes('joke') || lowerMessage.includes('funny')) {
       const jokes = [
         "Why do programmers prefer dark mode? Because light attracts bugs!",
