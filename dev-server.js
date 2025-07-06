@@ -133,7 +133,7 @@ async function createServer() {
   }
 
   app.listen(8080, () => {
-    console.log('🚀 Development server running at http://localhost:8080');
+    console.log('🚀 Development server running at nohttp://localhost:8080');
     console.log('📡 API available at http://localhost:8080/api/chat');
   });
 }
