@@ -156,12 +156,14 @@ export default async function handler(req, res) {
 // AI Chat Function using OpenRouter with conversation history, user context, and user behavior
 async function generateResponse(userMessage, conversationHistory = [], userContext = {}, userBehavior = null) {
   try {
-    // API key from environment variable
-    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
+    // Force use the hardcoded API key to avoid environment variable issues
+    const OPENROUTER_API_KEY = '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';
     
-    console.log('🔑 Using API key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
+    console.log('🔑 Using hardcoded API key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
     console.log('🔑 Environment variable DEEPAI_API_KEY exists:', !!process.env.DEEPAI_API_KEY);
-    console.log('🔑 Using fallback key:', !process.env.DEEPAI_API_KEY);
+    console.log('🔑 Environment variable value:', process.env.DEEPAI_API_KEY ? process.env.DEEPAI_API_KEY.substring(0, 20) + '...' : 'NOT SET');
+    console.log('🔑 API key length:', OPENROUTER_API_KEY.length);
+    console.log('🔑 API key format check:', OPENROUTER_API_KEY.startsWith('sk-or-v1-'));
     
     // Fetch personal information from Supabase
     const { data: personalInfo, error: personalInfoError } = await supabase
@@ -279,6 +281,21 @@ IMPORTANT RULES:
     console.log('🔑 API key length:', OPENROUTER_API_KEY.length);
     console.log('🔑 API key starts with:', OPENROUTER_API_KEY.substring(0, 10));
     
+    const requestBody = {
+      model: 'deepseek/deepseek-r1',
+      messages: messages,
+      max_tokens: 500,
+      temperature: 0.7
+    };
+    
+    console.log('📤 Full request body:', JSON.stringify(requestBody, null, 2));
+    console.log('📤 Request headers:', {
+      'Authorization': authHeader.substring(0, 30) + '...',
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://afraz-stellar-showcase.vercel.app',
+      'X-Title': 'Imam Mahbir Afraz Portfolio'
+    });
+    
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -287,15 +304,10 @@ IMPORTANT RULES:
         'HTTP-Referer': 'https://afraz-stellar-showcase.vercel.app',
         'X-Title': 'Imam Mahbir Afraz Portfolio'
       },
-      body: JSON.stringify({
-        model: 'deepseek/deepseek-r1',
-        messages: messages,
-        max_tokens: 500,
-        temperature: 0.7
-      })
+      body: JSON.stringify(requestBody)
     });
 
-    console.log('📡 Response status:', response.status);
+    console.log('�� Response status:', response.status);
     console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
