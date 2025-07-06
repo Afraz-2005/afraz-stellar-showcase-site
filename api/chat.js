@@ -165,6 +165,57 @@ async function generateResponse(userMessage, conversationHistory = [], userConte
     console.log('🔑 API key length:', OPENROUTER_API_KEY.length);
     console.log('🔑 API key format check:', OPENROUTER_API_KEY.startsWith('sk-or-v1-'));
     
+    // Test the API key with a simple request first
+    console.log('🧪 Testing API key with simple request...');
+    
+    // Try different authentication methods
+    const authMethods = [
+      `Bearer ${OPENROUTER_API_KEY}`,
+      `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`,
+      OPENROUTER_API_KEY
+    ];
+    
+    let testSuccessful = false;
+    let workingAuthMethod = null;
+    
+    for (const authMethod of authMethods) {
+      try {
+        console.log('🧪 Trying auth method:', authMethod.substring(0, 30) + '...');
+        const testResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': authMethod,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://afraz-stellar-showcase.vercel.app',
+            'X-Title': 'Imam Mahbir Afraz Portfolio'
+          },
+          body: JSON.stringify({
+            model: 'openai/gpt-3.5-turbo', // Try a different model
+            messages: [{ role: 'user', content: 'Hello' }],
+            max_tokens: 10,
+            temperature: 0.7
+          })
+        });
+        
+        console.log('🧪 Test response status:', testResponse.status);
+        if (testResponse.ok) {
+          console.log('✅ Test API call successful with auth method:', authMethod.substring(0, 30) + '...');
+          testSuccessful = true;
+          workingAuthMethod = authMethod;
+          break;
+        } else {
+          const testErrorText = await testResponse.text();
+          console.error('🧪 Test API error with auth method:', authMethod.substring(0, 30) + '...', testErrorText);
+        }
+      } catch (error) {
+        console.error('🧪 Test API error with auth method:', authMethod.substring(0, 30) + '...', error.message);
+      }
+    }
+    
+    if (!testSuccessful) {
+      throw new Error('All authentication methods failed');
+    }
+
     // Fetch personal information from Supabase
     const { data: personalInfo, error: personalInfoError } = await supabase
       .from('personal_info')
@@ -276,13 +327,13 @@ IMPORTANT RULES:
     }));
     
     // Debug the Authorization header
-    const authHeader = `Bearer ${OPENROUTER_API_KEY}`;
-    console.log('🔑 Authorization header:', authHeader.substring(0, 30) + '...');
-    console.log('🔑 API key length:', OPENROUTER_API_KEY.length);
-    console.log('🔑 API key starts with:', OPENROUTER_API_KEY.substring(0, 10));
+    const authHeader = workingAuthMethod;
+    console.log('🔑 Using working auth method:', authHeader.substring(0, 30) + '...');
+    console.log('🔑 Auth method length:', authHeader.length);
+    console.log('🔑 Auth method starts with:', authHeader.substring(0, 10));
     
     const requestBody = {
-      model: 'deepseek/deepseek-r1',
+      model: 'openai/gpt-3.5-turbo', // Use the model that worked in the test
       messages: messages,
       max_tokens: 500,
       temperature: 0.7
@@ -307,7 +358,7 @@ IMPORTANT RULES:
       body: JSON.stringify(requestBody)
     });
 
-    console.log('�� Response status:', response.status);
+    console.log('🧪 Response status:', response.status);
     console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
