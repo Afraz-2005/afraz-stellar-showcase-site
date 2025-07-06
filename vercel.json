@@ -16,6 +16,14 @@
     {
       "source": "/api/update-personal-info",
       "destination": "/api/update-personal-info.js"
+    },
+    {
+      "source": "/admin/update-personal-info",
+      "destination": "/admin/update-personal-info.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/admin/$1"
     }
   ],
   "headers": [
