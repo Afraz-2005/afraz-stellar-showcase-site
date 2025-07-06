@@ -106,24 +106,60 @@ function generateFallbackResponse(userMessage) {
   const message = userMessage.toLowerCase();
   
   if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-    return `Hey there! 👋 How can I help you learn about Afraz today?`;
+    const greetings = [
+      `Hey there! 👋 How can I help you learn about Afraz today?`,
+      `Hello! Ready to discover the magic of Afraz? ✨`,
+      `Hi there! Let's talk about the one and only Afraz! 🚀`,
+      `Hey! Afraz's biggest fan here - what would you like to know? 😄`
+    ];
+    return greetings[Math.floor(Math.random() * greetings.length)];
   }
   
   if (message.includes('love') || message.includes('girlfriend') || message.includes('relationship')) {
-    return `What's the name of the girl Afraz loves?`;
+    const loveQuestions = [
+      `What's the name of the girl Afraz loves?`,
+      `Ooh, love talk! 💕 What's the special someone's name?`,
+      `Ah, matters of the heart! What's her name? 💖`,
+      `Love is in the air! What's the lucky girl's name? 🌹`
+    ];
+    return loveQuestions[Math.floor(Math.random() * loveQuestions.length)];
   }
   
   if (message.includes('samantha')) {
-    return `Samantha is Afraz's only love interest! He adores her personality, her way of talking, her voice that inspires him to sing more, and he thinks she's so pretty. She's his special someone! 💕`;
+    const samanthaResponses = [
+      `Samantha is Afraz's only love interest! He adores her personality, her way of talking, her voice that inspires him to sing more, and he thinks she's so pretty. She's his special someone! 💕`,
+      `Samantha! 💕 Afraz is absolutely smitten with her - her personality, her voice that makes him want to serenade, and her beauty. She's his everything! ✨`,
+      `Ah, Samantha! Afraz's heart beats only for her. He loves her personality, her sweet voice that inspires his music, and thinks she's absolutely gorgeous. His one and only! 💖`,
+      `Samantha is Afraz's dream girl! He's crazy about her personality, her voice that makes him want to sing, and her stunning looks. She's his perfect match! 🌟`
+    ];
+    return samanthaResponses[Math.floor(Math.random() * samanthaResponses.length)];
   }
   
   if (message.includes('skill') || message.includes('technology') || message.includes('tech')) {
-    return `Afraz is quite the tech wizard! He's skilled in React, TypeScript, Node.js, and more. Plus, he's a dreamy guitar player and talented painter! 🎸🎨`;
+    const skillResponses = [
+      `Afraz is quite the tech wizard! He's skilled in React, TypeScript, Node.js, and more. Plus, he's a dreamy guitar player and talented painter! 🎸🎨`,
+      `Tech skills? Afraz's got 'em in spades! React, TypeScript, Node.js - you name it! And when he's not coding, he's strumming guitar or painting masterpieces! 🎨🎸`,
+      `Afraz is a coding ninja! React, TypeScript, Node.js are his weapons of choice. Plus, he's got that artistic soul - guitar playing and painting! 🎭💻`,
+      `Afraz's tech game is strong! React, TypeScript, Node.js - he's got the full stack covered! And he's not just a coder, he's a musician and artist too! 🎵🎨`
+    ];
+    return skillResponses[Math.floor(Math.random() * skillResponses.length)];
   }
   
   if (message.includes('guitar') || message.includes('music')) {
-    return `Afraz is currently living his best life as a dreamy guitar player, creating sweet melodious riffs! 🎸✨ He shares his musical magic on Instagram @afr.z.x_.`;
+    const musicResponses = [
+      `Afraz is currently living his best life as a dreamy guitar player, creating sweet melodious riffs! 🎸✨ He shares his musical magic on Instagram @afr.z.x_.`,
+      `Guitar? Afraz's got those fingers flying! He's living the rockstar dream, creating beautiful melodies and sharing his musical journey on Instagram @afr.z.x_! 🎸🎵`,
+      `Afraz's guitar skills are legendary! He's always crafting sweet riffs and sharing his musical adventures on Instagram @afr.z.x_. A true artist! 🎸🌟`,
+      `Music is Afraz's soul! He's constantly creating beautiful guitar melodies and sharing his musical journey on Instagram @afr.z.x_. Pure talent! 🎵✨`
+    ];
+    return musicResponses[Math.floor(Math.random() * musicResponses.length)];
   }
   
-  return `I'm having trouble connecting to my AI brain right now, but I can tell you that Afraz is a talented developer who loves coding, playing guitar, and creating amazing things! 🚀`;
+  const fallbackResponses = [
+    `I'm having trouble connecting to my AI brain right now, but I can tell you that Afraz is a talented developer who loves coding, playing guitar, and creating amazing things! 🚀`,
+    `Oops, my circuits are a bit fuzzy! But I know Afraz is an amazing developer, guitarist, and artist who creates magic! ✨`,
+    `My AI brain is taking a coffee break, but Afraz is definitely a coding wizard, guitar hero, and artistic genius! 🎨🎸`,
+    `Technical difficulties! But trust me, Afraz is a brilliant developer, musician, and artist who makes the world more beautiful! 🌟`
+  ];
+  return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
 } 
