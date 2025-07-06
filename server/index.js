@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 // Debug: Check if API key is loaded
-const OPENROUTER_API_KEY = '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';
+const OPENROUTER_API_KEY = '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';
 console.log('🔍 DEBUG: OPENROUTER_API_KEY loaded: YES (hardcoded)');
 console.log('🔍 DEBUG: API Key starts with:', OPENROUTER_API_KEY.substring(0, 20) + '...');
 

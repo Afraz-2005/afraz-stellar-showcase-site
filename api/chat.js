@@ -157,7 +157,7 @@ export default async function handler(req, res) {
 async function generateResponse(userMessage, conversationHistory = [], userContext = {}, userBehavior = null) {
   try {
     // API key from environment variable
-    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
+    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
     console.log('🔑 Using API key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
     
