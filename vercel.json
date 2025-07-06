@@ -45,6 +45,10 @@
     {
       "source": "/api/user-behavior",
       "destination": "/api/user-behavior.js"
+    },
+    {
+      "source": "/user-behaviors",
+      "destination": "/user-behaviors.html"
     }
   ],
   "headers": [
