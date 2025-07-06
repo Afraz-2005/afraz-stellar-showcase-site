@@ -1,4 +1,11 @@
-// Simple Vercel serverless function for chat API
+// Vercel serverless function for chat API with Supabase memory persistence
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabaseUrl = 'https://jhhxjxgkhtfnizebdnmr.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,10 +33,38 @@ export default async function handler(req, res) {
     console.log('📨 Received message:', message);
     console.log('🆔 Session ID:', sessionId);
 
-    // Generate AI response
-    const aiResponse = await generateResponse(message);
+    // Get conversation history from Supabase
+    const { data: history, error: historyError } = await supabase
+      .from('chat_conversations')
+      .select('*')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true })
+      .limit(10); // Keep last 10 messages for context
+
+    if (historyError) {
+      console.error('❌ Error fetching history:', historyError);
+    }
+
+    // Generate AI response with conversation history
+    const aiResponse = await generateResponse(message, history || []);
     
     console.log('🤖 AI Response:', aiResponse);
+
+    // Save the conversation to Supabase
+    const { error: saveError } = await supabase
+      .from('chat_conversations')
+      .insert([
+        {
+          session_id: sessionId,
+          user_message: message,
+          bot_response: aiResponse,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+    if (saveError) {
+      console.error('❌ Error saving conversation:', saveError);
+    }
 
     // Return response
     res.json({
@@ -47,21 +82,68 @@ export default async function handler(req, res) {
   }
 }
 
-// AI Chat Function using OpenRouter
-async function generateResponse(userMessage) {
+// AI Chat Function using OpenRouter with conversation history
+async function generateResponse(userMessage, conversationHistory = []) {
   try {
     // API key from environment variable
     const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
-    // Create context about Afraz
-    const context = `You are a helpful AI assistant that knows about Imam Mahbir Afraz, a developer. Keep responses SHORT and CONCISE (1-3 sentences maximum). For greetings like "hello", "hi", "hey" - respond with ONLY: "Hey there! 👋 How can I help you learn about Afraz today?" Be protective of his privacy - don't overshare personal details. Use clean formatting without markdown symbols. Add subtle humor but keep it professional.`;
+    // Fetch personal information from Supabase
+    const { data: personalInfo, error: personalInfoError } = await supabase
+      .from('personal_info')
+      .select('*')
+      .order('category', { ascending: true });
 
+    if (personalInfoError) {
+      console.error('❌ Error fetching personal info:', personalInfoError);
+    }
+
+    // Build personal information context
+    let personalInfoContext = '';
+    if (personalInfo && personalInfo.length > 0) {
+      const infoByCategory = {};
+      personalInfo.forEach(item => {
+        if (!infoByCategory[item.category]) {
+          infoByCategory[item.category] = [];
+        }
+        infoByCategory[item.category].push(`${item.key_name}: ${item.value}`);
+      });
+
+      personalInfoContext = Object.entries(infoByCategory)
+        .map(([category, items]) => `${category.toUpperCase()}: ${items.join(', ')}`)
+        .join('\n');
+    }
+
+    // Create context about Afraz with dynamic personal information
+    const context = `You are a helpful AI assistant that knows about Imam Mahbir Afraz, a developer. Keep responses SHORT and CONCISE (1-3 sentences maximum). For greetings like "hello", "hi", "hey" - respond with ONLY: "Hey there! 👋 How can I help you learn about Afraz today?" Be protective of his privacy - don't overshare personal details. Use clean formatting without markdown symbols. Add subtle humor but keep it professional.
+
+ABOUT AFRAZ - COMPLETE BIOGRAPHY:
+${personalInfoContext || 'Basic information about Afraz is available.'}
+
+IMPORTANT RULES:
+1. Use the personal information above to answer questions accurately
+2. For food questions, mention his specific preferences like KFC chicken fries, kacchi biriyani, fruit salad
+3. For music questions, mention his favorite artists like The Weeknd, Atif Aslam, Arijit Singh
+4. For gaming questions, mention he's a Valorant Reyna main who loves the Abyss map
+5. For romantic questions about "Samantha", respond: "Samantha is Afraz's romantic interest. They were friends for 3 years before his feelings developed. That's about all I should share about his personal life! 💕"
+6. For other romantic questions, say: "Afraz is a private person when it comes to romantic matters. I'd rather not share details about his personal life! 😊"`;
+
+    // Build conversation history for context
     const messages = [
-      { role: 'system', content: context },
-      { role: 'user', content: userMessage }
+      { role: 'system', content: context }
     ];
 
-    console.log('🤖 Calling OpenRouter API...');
+    // Add conversation history (last 5 exchanges for context)
+    const recentHistory = conversationHistory.slice(-10);
+    for (const exchange of recentHistory) {
+      messages.push({ role: 'user', content: exchange.user_message });
+      messages.push({ role: 'assistant', content: exchange.bot_response });
+    }
+
+    // Add current user message
+    messages.push({ role: 'user', content: userMessage });
+
+    console.log('🤖 Calling OpenRouter API with conversation history...');
     
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',

@@ -1,9 +1,21 @@
 {
   "version": 2,
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 30
+    },
+    "api/update-personal-info.js": {
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     {
       "source": "/api/chat",
-      "destination": "/netlify/functions/api.js"
+      "destination": "/api/chat.js"
+    },
+    {
+      "source": "/api/update-personal-info",
+      "destination": "/api/update-personal-info.js"
     }
   ],
   "headers": [
