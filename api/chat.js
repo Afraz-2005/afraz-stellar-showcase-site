@@ -157,13 +157,35 @@ export default async function handler(req, res) {
 async function generateResponse(userMessage, conversationHistory = [], userContext = {}, userBehavior = null) {
   try {
     // Force use the hardcoded API key to avoid environment variable issues
-    const OPENROUTER_API_KEY = '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';
+    const OPENROUTER_API_KEY = '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';
     
     console.log('🔑 Using hardcoded API key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
     console.log('🔑 Environment variable DEEPAI_API_KEY exists:', !!process.env.DEEPAI_API_KEY);
     console.log('🔑 Environment variable value:', process.env.DEEPAI_API_KEY ? process.env.DEEPAI_API_KEY.substring(0, 20) + '...' : 'NOT SET');
     console.log('🔑 API key length:', OPENROUTER_API_KEY.length);
     console.log('🔑 API key format check:', OPENROUTER_API_KEY.startsWith('sk-or-v1-'));
+    
+    // First, test if OpenRouter API is accessible at all
+    console.log('🌐 Testing OpenRouter API accessibility...');
+    try {
+      const statusResponse = await fetch('https://openrouter.ai/api/v1/models', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('🌐 Models API status:', statusResponse.status);
+      if (statusResponse.ok) {
+        const modelsData = await statusResponse.json();
+        console.log('🌐 Available models count:', modelsData.data?.length || 'unknown');
+      } else {
+        const errorText = await statusResponse.text();
+        console.error('🌐 Models API error:', errorText);
+      }
+    } catch (error) {
+      console.error('🌐 Models API network error:', error.message);
+    }
     
     // Test the API key with a simple request first
     console.log('🧪 Testing API key with simple request...');
@@ -213,7 +235,44 @@ async function generateResponse(userMessage, conversationHistory = [], userConte
     }
     
     if (!testSuccessful) {
-      throw new Error('All authentication methods failed');
+      console.error('❌ All authentication methods failed. This suggests:');
+      console.error('❌ 1. The API key might be invalid or expired');
+      console.error('❌ 2. OpenRouter service might be down');
+      console.error('❌ 3. There might be network connectivity issues');
+      console.error('❌ 4. The API key might not have sufficient credits');
+      
+      // Try one more time with a different approach - maybe the issue is with the model
+      console.log('🔄 Trying one more time with a different model...');
+      try {
+        const finalTestResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://afraz-stellar-showcase.vercel.app',
+            'X-Title': 'Imam Mahbir Afraz Portfolio'
+          },
+          body: JSON.stringify({
+            model: 'anthropic/claude-3-haiku', // Try a different model
+            messages: [{ role: 'user', content: 'Hello' }],
+            max_tokens: 10,
+            temperature: 0.7
+          })
+        });
+        
+        if (finalTestResponse.ok) {
+          console.log('✅ Final test successful with claude-3-haiku model');
+          testSuccessful = true;
+          workingAuthMethod = `Bearer ${OPENROUTER_API_KEY}`;
+        } else {
+          const finalErrorText = await finalTestResponse.text();
+          console.error('❌ Final test also failed:', finalErrorText);
+          throw new Error('All authentication methods failed - API key may be invalid or service unavailable');
+        }
+      } catch (finalError) {
+        console.error('❌ Final test error:', finalError.message);
+        throw new Error('All authentication methods failed - API key may be invalid or service unavailable');
+      }
     }
 
     // Fetch personal information from Supabase
