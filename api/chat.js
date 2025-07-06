@@ -41,6 +41,8 @@ export default async function handler(req, res) {
       finalUserId = `anon_${sessionId.split('_')[1]}`;
     }
 
+    console.log('🔧 Final User ID:', finalUserId);
+
     // Get or create user in database
     const { data: userData, error: userError } = await supabase
       .rpc('get_or_create_user', {
@@ -51,6 +53,8 @@ export default async function handler(req, res) {
 
     if (userError) {
       console.error('❌ Error getting/creating user:', userError);
+    } else {
+      console.log('✅ User data retrieved/created successfully');
     }
 
     // Get user context (relationship, preferences, recent conversations)
@@ -61,6 +65,8 @@ export default async function handler(req, res) {
 
     if (contextError) {
       console.error('❌ Error getting user context:', contextError);
+    } else {
+      console.log('✅ User context retrieved successfully');
     }
 
     // Get user behavior for this user
@@ -71,6 +77,8 @@ export default async function handler(req, res) {
 
     if (behaviorError) {
       console.error('❌ Error getting user behavior:', behaviorError);
+    } else {
+      console.log('✅ User behavior retrieved successfully');
     }
 
     // Get conversation history from Supabase (both session-based and user-based)
@@ -83,6 +91,8 @@ export default async function handler(req, res) {
 
     if (historyError) {
       console.error('❌ Error fetching history:', historyError);
+    } else {
+      console.log('✅ Conversation history retrieved successfully');
     }
 
     // Generate AI response with user context, conversation history, and user behavior
@@ -135,6 +145,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('❌ Error in chat endpoint:', error);
+    console.error('❌ Error stack:', error.stack);
     res.status(500).json({ 
       error: 'Internal server error',
       message: 'Sorry, I\'m having trouble processing your request right now.'
@@ -148,6 +159,8 @@ async function generateResponse(userMessage, conversationHistory = [], userConte
     // API key from environment variable
     const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
+    console.log('🔑 Using API key:', OPENROUTER_API_KEY.substring(0, 20) + '...');
+    
     // Fetch personal information from Supabase
     const { data: personalInfo, error: personalInfoError } = await supabase
       .from('personal_info')
@@ -156,6 +169,8 @@ async function generateResponse(userMessage, conversationHistory = [], userConte
 
     if (personalInfoError) {
       console.error('❌ Error fetching personal info:', personalInfoError);
+    } else {
+      console.log('✅ Personal info fetched successfully');
     }
 
     // Build personal information context
@@ -249,6 +264,12 @@ IMPORTANT RULES:
     messages.push({ role: 'user', content: userMessage });
 
     console.log('🤖 Calling OpenRouter API with conversation history...');
+    console.log('📤 Request payload:', JSON.stringify({
+      model: 'deepseek/deepseek-r1',
+      messages: messages.length,
+      max_tokens: 500,
+      temperature: 0.7
+    }));
     
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -266,8 +287,13 @@ IMPORTANT RULES:
       })
     });
 
+    console.log('📡 Response status:', response.status);
+    console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ OpenRouter API error details:', errorText);
+      throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
     }
     
     const data = await response.json();
@@ -276,10 +302,12 @@ IMPORTANT RULES:
     if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
       return data.choices[0].message.content.trim();
     } else {
+      console.error('❌ Empty or invalid response from OpenRouter:', data);
       throw new Error('Empty response from OpenRouter');
     }
   } catch (error) {
     console.error('❌ Error generating AI response:', error);
+    console.error('❌ Error stack:', error.stack);
     return generateFallbackResponse(userMessage);
   }
 }
