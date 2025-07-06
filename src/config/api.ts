@@ -1,8 +1,8 @@
 // API Configuration for different environments
 const isDevelopment = import.meta.env.DEV;
 
-// Your Fly.io server URL (replace with your actual URL after deployment)
-const PRODUCTION_API_URL = 'https://afraz-chatbot-server.fly.dev';
+// Your Cyclic.sh server URL (replace with your actual URL after deployment)
+const PRODUCTION_API_URL = 'https://your-app-name.cyclic.app';
 const DEVELOPMENT_API_URL = 'http://localhost:3001';
 
 export const API_BASE_URL = isDevelopment ? DEVELOPMENT_API_URL : PRODUCTION_API_URL;
