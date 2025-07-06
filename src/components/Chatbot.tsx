@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, X, Send, Bot, User, AlertCircle, Maximize2, Minimize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface Message {
   id: string;
@@ -76,7 +77,7 @@ export const Chatbot = () => {
 
     try {
       console.log('Sending message to server...');
-      const response = await fetch('http://localhost:3001/api/chat', {
+      const response = await fetch(API_ENDPOINTS.chat, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
