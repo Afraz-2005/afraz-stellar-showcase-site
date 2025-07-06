@@ -1,6 +1,6 @@
-const express = require('express');
-const { createServer: createViteServer } = require('vite');
-const path = require('path');
+import express from 'express';
+import { createServer as createViteServer } from 'vite';
+import path from 'path';
 
 async function createServer() {
   const app = express();
@@ -11,11 +11,8 @@ async function createServer() {
     appType: 'spa'
   });
 
-  // Use vite's connect instance as middleware
-  app.use(vite.middlewares);
-
-  // API routes
-  app.use('/api/chat', async (req, res) => {
+  // API routes - handle before Vite middleware
+  app.use('/api/chat', express.json(), async (req, res) => {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -62,6 +59,9 @@ async function createServer() {
       });
     }
   });
+
+  // Use vite's connect instance as middleware
+  app.use(vite.middlewares);
 
   // AI Chat Function using OpenRouter
   async function generateResponse(userMessage) {
