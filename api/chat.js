@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, sessionId } = req.body;
+    const { message, sessionId, userId, userName } = req.body;
     
     if (!message || !message.trim()) {
       return res.status(400).json({ error: 'Message is required' });
@@ -32,12 +32,52 @@ export default async function handler(req, res) {
 
     console.log('📨 Received message:', message);
     console.log('🆔 Session ID:', sessionId);
+    console.log('👤 User ID:', userId);
 
-    // Get conversation history from Supabase
+    // Generate or get user ID if not provided
+    let finalUserId = userId;
+    if (!finalUserId) {
+      // Create a user ID based on session ID for anonymous users
+      finalUserId = `anon_${sessionId.split('_')[1]}`;
+    }
+
+    // Get or create user in database
+    const { data: userData, error: userError } = await supabase
+      .rpc('get_or_create_user', {
+        p_user_id: finalUserId,
+        p_name: userName || null,
+        p_email: null
+      });
+
+    if (userError) {
+      console.error('❌ Error getting/creating user:', userError);
+    }
+
+    // Get user context (relationship, preferences, recent conversations)
+    const { data: userContext, error: contextError } = await supabase
+      .rpc('get_user_context', {
+        p_user_id: finalUserId
+      });
+
+    if (contextError) {
+      console.error('❌ Error getting user context:', contextError);
+    }
+
+    // Get special instructions for this user (admin commands)
+    const { data: specialInstructions, error: instructionsError } = await supabase
+      .rpc('get_user_instructions', {
+        p_target_user_id: finalUserId
+      });
+
+    if (instructionsError) {
+      console.error('❌ Error getting special instructions:', instructionsError);
+    }
+
+    // Get conversation history from Supabase (both session-based and user-based)
     const { data: history, error: historyError } = await supabase
-      .from('chat_conversations')
+      .from('user_conversations')
       .select('*')
-      .eq('session_id', sessionId)
+      .eq('user_id', finalUserId)
       .order('created_at', { ascending: true })
       .limit(10); // Keep last 10 messages for context
 
@@ -45,13 +85,26 @@ export default async function handler(req, res) {
       console.error('❌ Error fetching history:', historyError);
     }
 
-    // Generate AI response with conversation history
-    const aiResponse = await generateResponse(message, history || []);
+    // Generate AI response with user context, conversation history, and special instructions
+    const aiResponse = await generateResponse(message, history || [], userContext || {}, specialInstructions || {});
     
     console.log('🤖 AI Response:', aiResponse);
 
-    // Save the conversation to Supabase
+    // Save the conversation to Supabase (both user-based and session-based)
     const { error: saveError } = await supabase
+      .from('user_conversations')
+      .insert([
+        {
+          user_id: finalUserId,
+          session_id: sessionId,
+          user_message: message,
+          bot_response: aiResponse,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+    // Also save to original chat_conversations table for backward compatibility
+    const { error: legacySaveError } = await supabase
       .from('chat_conversations')
       .insert([
         {
@@ -61,6 +114,13 @@ export default async function handler(req, res) {
           created_at: new Date().toISOString()
         }
       ]);
+
+    if (saveError) {
+      console.error('❌ Error saving user conversation:', saveError);
+    }
+    if (legacySaveError) {
+      console.error('❌ Error saving legacy conversation:', legacySaveError);
+    }
 
     if (saveError) {
       console.error('❌ Error saving conversation:', saveError);
@@ -82,11 +142,11 @@ export default async function handler(req, res) {
   }
 }
 
-// AI Chat Function using OpenRouter with conversation history
-async function generateResponse(userMessage, conversationHistory = []) {
+// AI Chat Function using OpenRouter with conversation history, user context, and special instructions
+async function generateResponse(userMessage, conversationHistory = [], userContext = {}, specialInstructions = {}) {
   try {
     // API key from environment variable
-    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
+    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
     // Fetch personal information from Supabase
     const { data: personalInfo, error: personalInfoError } = await supabase
@@ -114,11 +174,64 @@ async function generateResponse(userMessage, conversationHistory = []) {
         .join('\n');
     }
 
-    // Create context about Afraz with dynamic personal information
+    // Build user context information
+    let userContextInfo = '';
+    if (userContext && userContext.user) {
+      const user = userContext.user;
+      const relationship = userContext.relationship;
+      
+      userContextInfo = `
+USER CONTEXT:
+- User ID: ${user.user_id}
+- Name: ${user.name || 'Anonymous'}
+- Visit Count: ${user.visit_count}
+- First Visit: ${user.first_visit}
+- Last Visit: ${user.last_visit}
+- Relationship Type: ${relationship?.relationship_type || 'stranger'}
+- Familiarity Level: ${relationship?.familiarity_level || 1}/5
+- Interaction Style: ${relationship?.interaction_style || 'friendly'}
+- Topics of Interest: ${relationship?.topics_of_interest?.join(', ') || 'none specified'}
+- Topics to Avoid: ${relationship?.topics_to_avoid?.join(', ') || 'none specified'}
+- Personal Details: ${JSON.stringify(relationship?.personal_details || {})}
+`;
+    }
+
+    // Build special instructions context
+    let specialInstructionsContext = '';
+    if (specialInstructions && (specialInstructions.special_instructions?.length > 0 || specialInstructions.behavior_rules?.length > 0)) {
+      specialInstructionsContext = '\nADMIN SPECIAL INSTRUCTIONS FOR THIS USER:\n';
+      
+      // Add special instructions
+      if (specialInstructions.special_instructions?.length > 0) {
+        specialInstructionsContext += 'SPECIAL INSTRUCTIONS:\n';
+        specialInstructions.special_instructions.forEach((instruction, index) => {
+          specialInstructionsContext += `${index + 1}. [${instruction.type.toUpperCase()}] ${instruction.text}\n`;
+        });
+      }
+      
+      // Add behavior rules
+      if (specialInstructions.behavior_rules?.length > 0) {
+        specialInstructionsContext += 'BEHAVIOR RULES:\n';
+        specialInstructions.behavior_rules.forEach((rule, index) => {
+          specialInstructionsContext += `${index + 1}. ${rule.name}: ${rule.description}\n`;
+          if (rule.behavior_pattern) {
+            specialInstructionsContext += `   Pattern: ${JSON.stringify(rule.behavior_pattern)}\n`;
+          }
+        });
+      }
+      
+      specialInstructionsContext += '\nIMPORTANT: These admin instructions override normal behavior. Follow them precisely.\n';
+    }
+
+    // Create context about Afraz with dynamic personal information and user context
     const context = `You are a helpful AI assistant that knows about Imam Mahbir Afraz, a developer. Keep responses SHORT and CONCISE (1-3 sentences maximum). For greetings like "hello", "hi", "hey" - respond with ONLY: "Hey there! 👋 How can I help you learn about Afraz today?" Be protective of his privacy - don't overshare personal details. Use clean formatting without markdown symbols. Add subtle humor but keep it professional.
 
 ABOUT AFRAZ - COMPLETE BIOGRAPHY:
 ${personalInfoContext || 'Basic information about Afraz is available.'}
+
+${userContextInfo}
+
+${specialInstructionsContext}
 
 IMPORTANT RULES:
 1. Use the personal information above to answer questions accurately
@@ -126,7 +239,15 @@ IMPORTANT RULES:
 3. For music questions, mention his favorite artists like The Weeknd, Atif Aslam, Arijit Singh
 4. For gaming questions, mention he's a Valorant Reyna main who loves the Abyss map
 5. For romantic questions about "Samantha", respond: "Samantha is Afraz's romantic interest. They were friends for 3 years before his feelings developed. That's about all I should share about his personal life! 💕"
-6. For other romantic questions, say: "Afraz is a private person when it comes to romantic matters. I'd rather not share details about his personal life! 😊"`;
+6. For other romantic questions, say: "Afraz is a private person when it comes to romantic matters. I'd rather not share details about his personal life! 😊"
+7. PERSONALIZATION: Adapt your tone based on the user's relationship type and familiarity level:
+   - For 'friend' with high familiarity: Be casual, use inside jokes, reference past conversations
+   - For 'colleague': Be professional but friendly, focus on work-related topics
+   - For 'stranger': Be welcoming and helpful, gradually build familiarity
+   - For 'regular_visitor': Be warm and familiar, reference their interests
+8. Remember the user's topics of interest and avoid topics they want to avoid
+9. Use the user's name if provided, and reference their visit count and relationship
+10. ADMIN INSTRUCTIONS: If special admin instructions are provided for this user, they take highest priority and override normal behavior`;
 
     // Build conversation history for context
     const messages = [

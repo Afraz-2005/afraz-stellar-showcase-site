@@ -9,6 +9,12 @@
     },
     "api/test-db.js": {
       "maxDuration": 30
+    },
+    "api/manage-user.js": {
+      "maxDuration": 30
+    },
+    "api/admin.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
@@ -31,6 +37,18 @@
     {
       "source": "/api/test-db",
       "destination": "/api/test-db.js"
+    },
+    {
+      "source": "/api/manage-user",
+      "destination": "/api/manage-user.js"
+    },
+    {
+      "source": "/api/admin",
+      "destination": "/api/admin.js"
+    },
+    {
+      "source": "/admin-controls",
+      "destination": "/public/admin-controls.html"
     }
   ],
   "headers": [

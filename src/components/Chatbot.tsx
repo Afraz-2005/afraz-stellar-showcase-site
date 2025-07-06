@@ -21,6 +21,8 @@ export const Chatbot = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -61,6 +63,37 @@ export const Chatbot = () => {
     setIsFullscreen(false);
   };
 
+  // Generate or get user ID
+  const getUserId = () => {
+    if (userId) return userId;
+    
+    // Try to get from localStorage
+    const storedUserId = localStorage.getItem('afraz_chatbot_user_id');
+    if (storedUserId) {
+      setUserId(storedUserId);
+      return storedUserId;
+    }
+    
+    // Generate new user ID
+    const newUserId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('afraz_chatbot_user_id', newUserId);
+    setUserId(newUserId);
+    return newUserId;
+  };
+
+  // Get user name from localStorage or prompt
+  const getUserName = () => {
+    if (userName) return userName;
+    
+    const storedName = localStorage.getItem('afraz_chatbot_user_name');
+    if (storedName) {
+      setUserName(storedName);
+      return storedName;
+    }
+    
+    return null; // Will prompt user later
+  };
+
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
@@ -85,6 +118,8 @@ export const Chatbot = () => {
         body: JSON.stringify({
           message: userMessage.text,
           sessionId: sessionId,
+          userId: getUserId(),
+          userName: getUserName(),
         }),
       });
 
