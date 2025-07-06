@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 async function generateResponse(userMessage) {
   try {
     // API key from environment variable
-    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
+    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
     // Create context about Afraz
     const context = `You are Afraz's intelligent AI assistant. Be thoughtful, helpful, and conversational. Only ask about love life when someone specifically asks about Afraz's romantic relationships, girlfriend, or love life.

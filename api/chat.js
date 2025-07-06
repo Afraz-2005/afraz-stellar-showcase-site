@@ -146,7 +146,7 @@ export default async function handler(req, res) {
 async function generateResponse(userMessage, conversationHistory = [], userContext = {}, userBehavior = null) {
   try {
     // API key from environment variable
-    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
+    const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
     // Fetch personal information from Supabase
     const { data: personalInfo, error: personalInfoError } = await supabase
