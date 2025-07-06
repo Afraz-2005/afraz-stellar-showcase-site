@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afraz Blog Admin - Upload Videos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-guitar"></i> Afraz Blog Admin</h1>
+            <p>Upload your dreamy guitar covers and content</p>
+        </header>
+
+        <main>
+            <!-- Upload Form -->
+            <section class="upload-section">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Upload New Video</h2>
+                
+                <form id="uploadForm" class="upload-form">
+                    <div class="form-group">
+                        <label for="title">Video Title *</label>
+                        <input type="text" id="title" name="title" required placeholder="e.g., Dreamy Melodies - Acoustic Session">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" required placeholder="Describe your guitar cover, the mood, style, etc." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="genre">Genre *</label>
+                            <select id="genre" name="genre" required>
+                                <option value="">Select Genre</option>
+                                <option value="Dreamy">Dreamy</option>
+                                <option value="Acoustic">Acoustic</option>
+                                <option value="Covers">Covers</option>
+                                <option value="Instrumental">Instrumental</option>
+                                <option value="Improv">Improv</option>
+                                <option value="Creative">Creative</option>
+                                <option value="Soulful">Soulful</option>
+                                <option value="Melodic">Melodic</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">Date Label</label>
+                            <select id="date" name="date">
+                                <option value="Latest">Latest</option>
+                                <option value="This Week">This Week</option>
+                                <option value="Last Week">Last Week</option>
+                                <option value="Featured">Featured</option>
+                                <option value="Recent">Recent</option>
+                                <option value="Popular">Popular</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="videoFile">Video File *</label>
+                        <div class="file-upload">
+                            <input type="file" id="videoFile" name="videoFile" accept="video/*" required>
+                            <div class="file-upload-label">
+                                <i class="fas fa-video"></i>
+                                <span>Choose video file (MP4, MOV, AVI)</span>
+                            </div>
+                        </div>
+                        <div id="fileInfo" class="file-info"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="thumbnail">Thumbnail Image (Optional)</label>
+                        <div class="file-upload">
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+                            <div class="file-upload-label">
+                                <i class="fas fa-image"></i>
+                                <span>Choose thumbnail image</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="uploadBtn" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload Video
+                        </button>
+                        <button type="button" id="previewBtn" class="btn btn-secondary">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Upload Progress -->
+            <section id="progressSection" class="progress-section" style="display: none;">
+                <h3><i class="fas fa-spinner fa-spin"></i> Uploading...</h3>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <p id="progressText">Preparing upload...</p>
+            </section>
+
+            <!-- Recent Uploads -->
+            <section class="recent-section">
+                <h2><i class="fas fa-history"></i> Recent Uploads</h2>
+                <div id="recentUploads" class="uploads-grid">
+                    <!-- Recent uploads will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Preview Modal -->
+        <div id="previewModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Preview</h3>
+                <div id="previewContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

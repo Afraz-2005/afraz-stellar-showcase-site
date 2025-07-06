@@ -1,41 +1,46 @@
-
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
+import type { CarouselApi } from "@/components/ui/carousel";
 
-export const Navbar = () => {
+interface NavbarProps {
+  api?: CarouselApi;
+  current: number;
+}
+
+export const Navbar = ({ api, current }: NavbarProps) => {
   const [activeSection, setActiveSection] = useState("hero");
-  const navItems = ["About", "Projects", "Skills", "Contact"];
+  const navItems = ["About", "Projects", "Skills", "Contact", "Blog"];
 
   useEffect(() => {
-    const handleScroll = () => {
-      const carousel = document.querySelector('[role="region"]');
-      if (carousel) {
-        const scrollPosition = carousel.scrollLeft;
-        const width = carousel.clientWidth;
-        const section = Math.round(scrollPosition / width);
-        
-        if (section === 0) setActiveSection("hero");
-        else if (section < navItems.length + 1) {
-          setActiveSection(navItems[section - 1].toLowerCase());
-        }
-      }
-    };
-
-    // Initial check to set active section on load
-    handleScroll();
-
-    const carousel = document.querySelector('[role="region"]');
-    if (carousel) {
-      carousel.addEventListener('scroll', handleScroll);
-      return () => carousel.removeEventListener('scroll', handleScroll);
+    if (current === 0) {
+      setActiveSection("hero");
+    } else if (current <= navItems.length) {
+      setActiveSection(navItems[current - 1].toLowerCase());
     }
-  }, [navItems]);
+  }, [current, navItems]);
 
-  // Handle clicking on links to set active section
+  // Handle clicking on links to navigate to sections
   const handleNavClick = (section: string) => {
     setActiveSection(section);
+    
+    if (!api) return;
+    
+    // Explicit mapping to ensure correct navigation
+    const sectionMap: { [key: string]: number } = {
+      "hero": 0,
+      "about": 1,
+      "projects": 2,
+      "skills": 3,
+      "contact": 4,
+      "blog": 5
+    };
+    
+    const targetIndex = sectionMap[section];
+    if (targetIndex !== undefined) {
+      api.scrollTo(targetIndex);
+    }
   };
 
   return (

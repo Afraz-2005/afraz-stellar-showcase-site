@@ -1,36 +1,33 @@
-
 import { useEffect, useState } from 'react';
+import type { CarouselApi } from '@/components/ui/carousel';
 
-export const ProgressBar = () => {
+interface ProgressBarProps {
+  api?: CarouselApi;
+}
+
+export const ProgressBar = ({ api }: ProgressBarProps) => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const carouselElement = document.querySelector('[role="region"]');
-      if (carouselElement) {
-        const scrollPosition = carouselElement.scrollLeft;
-        const maxScroll = carouselElement.scrollWidth - carouselElement.clientWidth;
-        const percentage = maxScroll > 0 ? (scrollPosition / maxScroll) * 100 : 0;
-        setProgress(percentage);
-      }
+    if (!api) return;
+
+    const updateProgress = () => {
+      const selectedIndex = api.selectedScrollSnap();
+      const totalSlides = api.scrollSnapList().length;
+      const percentage = totalSlides > 1 ? (selectedIndex / (totalSlides - 1)) * 100 : 0;
+      setProgress(percentage);
     };
 
-    const carousel = document.querySelector('[role="region"]');
-    if (carousel) {
-      carousel.addEventListener('scroll', handleScroll);
-      // Initialize progress
-      handleScroll();
+    // Update on selection change
+    api.on("select", updateProgress);
+    
+    // Initial update
+    updateProgress();
 
-      // Handle button clicks
-      const observer = new MutationObserver(handleScroll);
-      observer.observe(carousel, { attributes: true, attributeFilter: ['style'] });
-
-      return () => {
-        carousel.removeEventListener('scroll', handleScroll);
-        observer.disconnect();
-      };
-    }
-  }, []);
+    return () => {
+      api.off("select", updateProgress);
+    };
+  }, [api]);
 
   return (
     <div className="fixed bottom-0 left-0 w-full h-1 bg-black/30 z-50">

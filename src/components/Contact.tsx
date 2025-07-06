@@ -29,7 +29,7 @@ export const Contact = () => {
                 <Github className="h-8 w-8" />
               </a>
               <a
-                href="https://instagram.com/"
+                href="https://instagram.com/afr.z.x_"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 transition-colors"
