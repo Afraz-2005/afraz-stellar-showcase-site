@@ -63,14 +63,14 @@ export default async function handler(req, res) {
       console.error('❌ Error getting user context:', contextError);
     }
 
-    // Get special instructions for this user (admin commands)
-    const { data: specialInstructions, error: instructionsError } = await supabase
-      .rpc('get_user_instructions', {
-        p_target_user_id: finalUserId
+    // Get user behavior for this user
+    const { data: userBehavior, error: behaviorError } = await supabase
+      .rpc('get_user_behavior', {
+        p_user_id: finalUserId
       });
 
-    if (instructionsError) {
-      console.error('❌ Error getting special instructions:', instructionsError);
+    if (behaviorError) {
+      console.error('❌ Error getting user behavior:', behaviorError);
     }
 
     // Get conversation history from Supabase (both session-based and user-based)
@@ -85,8 +85,8 @@ export default async function handler(req, res) {
       console.error('❌ Error fetching history:', historyError);
     }
 
-    // Generate AI response with user context, conversation history, and special instructions
-    const aiResponse = await generateResponse(message, history || [], userContext || {}, specialInstructions || {});
+    // Generate AI response with user context, conversation history, and user behavior
+    const aiResponse = await generateResponse(message, history || [], userContext || {}, userBehavior);
     
     console.log('🤖 AI Response:', aiResponse);
 
@@ -142,8 +142,8 @@ export default async function handler(req, res) {
   }
 }
 
-// AI Chat Function using OpenRouter with conversation history, user context, and special instructions
-async function generateResponse(userMessage, conversationHistory = [], userContext = {}, specialInstructions = {}) {
+// AI Chat Function using OpenRouter with conversation history, user context, and user behavior
+async function generateResponse(userMessage, conversationHistory = [], userContext = {}, userBehavior = null) {
   try {
     // API key from environment variable
     const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
@@ -196,31 +196,15 @@ USER CONTEXT:
 `;
     }
 
-    // Build special instructions context
-    let specialInstructionsContext = '';
-    if (specialInstructions && (specialInstructions.special_instructions?.length > 0 || specialInstructions.behavior_rules?.length > 0)) {
-      specialInstructionsContext = '\nADMIN SPECIAL INSTRUCTIONS FOR THIS USER:\n';
-      
-      // Add special instructions
-      if (specialInstructions.special_instructions?.length > 0) {
-        specialInstructionsContext += 'SPECIAL INSTRUCTIONS:\n';
-        specialInstructions.special_instructions.forEach((instruction, index) => {
-          specialInstructionsContext += `${index + 1}. [${instruction.type.toUpperCase()}] ${instruction.text}\n`;
-        });
+    // Build user behavior context
+    let userBehaviorContext = '';
+    if (userBehavior) {
+      userBehaviorContext = `\nUSER BEHAVIOR INSTRUCTIONS:\n`;
+      userBehaviorContext += `Behavior Type: ${userBehavior.behavior_type}\n`;
+      if (userBehavior.custom_instructions) {
+        userBehaviorContext += `Custom Instructions: ${userBehavior.custom_instructions}\n`;
       }
-      
-      // Add behavior rules
-      if (specialInstructions.behavior_rules?.length > 0) {
-        specialInstructionsContext += 'BEHAVIOR RULES:\n';
-        specialInstructions.behavior_rules.forEach((rule, index) => {
-          specialInstructionsContext += `${index + 1}. ${rule.name}: ${rule.description}\n`;
-          if (rule.behavior_pattern) {
-            specialInstructionsContext += `   Pattern: ${JSON.stringify(rule.behavior_pattern)}\n`;
-          }
-        });
-      }
-      
-      specialInstructionsContext += '\nIMPORTANT: These admin instructions override normal behavior. Follow them precisely.\n';
+      userBehaviorContext += `\nIMPORTANT: Follow these behavior instructions for this specific user.\n`;
     }
 
     // Create context about Afraz with dynamic personal information and user context
@@ -231,7 +215,7 @@ ${personalInfoContext || 'Basic information about Afraz is available.'}
 
 ${userContextInfo}
 
-${specialInstructionsContext}
+${userBehaviorContext}
 
 IMPORTANT RULES:
 1. Use the personal information above to answer questions accurately
@@ -247,7 +231,7 @@ IMPORTANT RULES:
    - For 'regular_visitor': Be warm and familiar, reference their interests
 8. Remember the user's topics of interest and avoid topics they want to avoid
 9. Use the user's name if provided, and reference their visit count and relationship
-10. ADMIN INSTRUCTIONS: If special admin instructions are provided for this user, they take highest priority and override normal behavior`;
+10. USER BEHAVIOR: If specific behavior instructions are provided for this user, follow them precisely`;
 
     // Build conversation history for context
     const messages = [

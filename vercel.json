@@ -13,13 +13,7 @@
     "api/manage-user.js": {
       "maxDuration": 30
     },
-    "api/admin.js": {
-      "maxDuration": 30
-    },
-    "api/test-admin.js": {
-      "maxDuration": 30
-    },
-    "api/simple-admin-test.js": {
+    "api/user-behavior.js": {
       "maxDuration": 30
     }
   },
@@ -49,16 +43,8 @@
       "destination": "/api/manage-user.js"
     },
     {
-      "source": "/api/admin",
-      "destination": "/api/admin.js"
-    },
-    {
-      "source": "/api/test-admin",
-      "destination": "/api/test-admin.js"
-    },
-    {
-      "source": "/api/simple-admin-test",
-      "destination": "/api/simple-admin-test.js"
+      "source": "/api/user-behavior",
+      "destination": "/api/user-behavior.js"
     }
   ],
   "headers": [
