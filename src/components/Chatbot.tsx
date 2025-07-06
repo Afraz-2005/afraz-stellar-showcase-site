@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, X, Send, Bot, User, AlertCircle, Maximize2, Minimize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { API_ENDPOINTS } from "@/config/api";
+import { getOrCreateUserId, getUserName, setUserName } from "@/lib/utils";
 
 interface Message {
   id: string;
@@ -22,7 +23,9 @@ export const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [userName, setUserNameState] = useState<string | null>(null);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [nameInput, setNameInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -54,6 +57,13 @@ export const Chatbot = () => {
     };
   }, [isFullscreen]);
 
+  // Check if user has a name on first chat open
+  useEffect(() => {
+    if (isOpen && !userName && !getUserName()) {
+      setShowNamePrompt(true);
+    }
+  }, [isOpen, userName]);
+
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
   };
@@ -63,35 +73,50 @@ export const Chatbot = () => {
     setIsFullscreen(false);
   };
 
-  // Generate or get user ID
+  // Generate or get user ID with device fingerprinting
   const getUserId = () => {
     if (userId) return userId;
     
-    // Try to get from localStorage
-    const storedUserId = localStorage.getItem('afraz_chatbot_user_id');
-    if (storedUserId) {
-      setUserId(storedUserId);
-      return storedUserId;
-    }
-    
-    // Generate new user ID
-    const newUserId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('afraz_chatbot_user_id', newUserId);
-    setUserId(newUserId);
-    return newUserId;
+    const deviceUserId = getOrCreateUserId();
+    setUserId(deviceUserId);
+    return deviceUserId;
   };
 
   // Get user name from localStorage or prompt
-  const getUserName = () => {
+  const getUserNameFromStorage = () => {
     if (userName) return userName;
     
-    const storedName = localStorage.getItem('afraz_chatbot_user_name');
+    const storedName = getUserName();
     if (storedName) {
-      setUserName(storedName);
+      setUserNameState(storedName);
       return storedName;
     }
     
     return null; // Will prompt user later
+  };
+
+  // Set user name and save to localStorage
+  const saveUserName = (name: string) => {
+    setUserName(name);
+    setUserNameState(name);
+  };
+
+  // Handle name submission
+  const handleNameSubmit = () => {
+    if (nameInput.trim()) {
+      saveUserName(nameInput.trim());
+      setShowNamePrompt(false);
+      setNameInput('');
+      
+      // Add welcome message with their name
+      const welcomeMessage: Message = {
+        id: `welcome_${Date.now()}`,
+        text: `Hey ${nameInput.trim()}! 👋 Great to meet you! I'm here to tell you all about Afraz. What would you like to know?`,
+        sender: 'bot',
+        timestamp: new Date(),
+      };
+      setMessages([welcomeMessage]);
+    }
   };
 
   const sendMessage = async () => {
@@ -119,7 +144,7 @@ export const Chatbot = () => {
           message: userMessage.text,
           sessionId: sessionId,
           userId: getUserId(),
-          userName: getUserName(),
+          userName: getUserNameFromStorage(),
         }),
       });
 
@@ -298,6 +323,33 @@ export const Chatbot = () => {
               </CardHeader>
               
               <CardContent className="p-0 h-full flex flex-col">
+                {/* Name Prompt */}
+                {showNamePrompt && (
+                  <div className="p-4 bg-gradient-to-r from-primary/10 to-primary/5 border-b border-primary/20">
+                    <div className="text-center">
+                      <h3 className="text-white font-medium mb-2">Welcome! 👋</h3>
+                      <p className="text-gray-300 text-sm mb-3">What should I call you?</p>
+                      <div className="flex gap-2">
+                        <Input
+                          value={nameInput}
+                          onChange={(e) => setNameInput(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
+                          placeholder="Enter your name..."
+                          className="flex-1 bg-secondary/50 border-primary/20 text-white placeholder:text-gray-400 focus:border-primary"
+                          autoFocus
+                        />
+                        <Button
+                          onClick={handleNameSubmit}
+                          disabled={!nameInput.trim()}
+                          className="bg-primary hover:bg-primary/90"
+                        >
+                          Start Chat
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Messages Area */}
                 <ScrollArea 
                   className="flex-1 p-3 sm:p-4" 
@@ -315,7 +367,7 @@ export const Chatbot = () => {
                         : '400px'
                   }}
                 >
-                  {messages.length === 0 ? (
+                  {messages.length === 0 && !showNamePrompt ? (
                     <div className="text-center text-gray-400 mt-8">
                       <Bot className="h-12 w-12 mx-auto mb-3 text-primary/50" />
                       <p className="text-sm">Hi! I'm Afraz's AI assistant. Ask me anything about him!</p>
@@ -406,11 +458,11 @@ export const Chatbot = () => {
                       onKeyPress={handleKeyPress}
                       placeholder="Ask me about Afraz..."
                       className="flex-1 bg-secondary/50 border-primary/20 text-white placeholder:text-gray-400 focus:border-primary text-sm sm:text-base"
-                      disabled={isLoading}
+                      disabled={isLoading || showNamePrompt}
                     />
                     <Button
                       onClick={sendMessage}
-                      disabled={!inputValue.trim() || isLoading}
+                      disabled={!inputValue.trim() || isLoading || showNamePrompt}
                       size="icon"
                       className="bg-primary hover:bg-primary/90 h-10 w-10 sm:h-10 sm:w-10"
                     >
