@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Instagram, Music, Play, Guitar, Heart, Loader2, ExternalLink } from "lucide-react";
+import { Instagram, Music, Play, Guitar, Heart, Loader2, ExternalLink, Video as VideoIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase, Video } from "@/lib/supabase";
 
@@ -35,6 +35,22 @@ export const Blog = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Generate thumbnail for video
+  const generateThumbnail = (video: Video) => {
+    // If there's already a thumbnail, use it
+    if (video.thumbnail_url) {
+      return video.thumbnail_url;
+    }
+    
+    // For Instagram videos, we can't generate thumbnails directly, so use a gradient background
+    if (video.video_url.includes('instagram.com')) {
+      return null; // Will use gradient background
+    }
+    
+    // For direct video files, we could generate thumbnails, but for now use gradient
+    return null;
   };
 
   // Play video function
@@ -80,7 +96,7 @@ export const Blog = () => {
               <div className="flex flex-col md:flex-row items-center gap-6">
                 <div className="relative">
                   <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-pulse">
-                    <Instagram className="w-12 h-12 text-white" />
+                    <VideoIcon className="w-12 h-12 text-white" />
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-green-500 rounded-full p-2">
                     <Music className="w-4 h-4 text-white" />
@@ -148,67 +164,87 @@ export const Blog = () => {
             </div>
           ) : (
             // Videos grid
-            videos.map((video) => (
-              <Card 
-                key={video.id} 
-                className="bg-black/50 backdrop-blur border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 group"
-              >
-                <CardContent className="p-6">
-                  <div className="relative mb-4">
-                    {video.video_url.includes('instagram.com') ? (
-                      // Instagram preview with click to open
-                      <div className="w-full h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all duration-300 cursor-pointer" onClick={() => playVideo(video.video_url)}>
-                        <div className="text-center">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <Instagram className="w-6 h-6 text-white" />
+            videos.map((video) => {
+              const thumbnail = generateThumbnail(video);
+              const isInstagram = video.video_url.includes('instagram.com');
+              
+              return (
+                <Card 
+                  key={video.id} 
+                  className="bg-black/50 backdrop-blur border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105 group"
+                >
+                  <CardContent className="p-6">
+                    <div className="relative mb-4">
+                      {thumbnail ? (
+                        // Thumbnail with play button overlay
+                        <div className="relative w-full h-40 rounded-lg overflow-hidden cursor-pointer group/video" onClick={() => playVideo(video.video_url)}>
+                          <img 
+                            src={thumbnail} 
+                            alt={video.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
+                            {isInstagram ? (
+                              <div className="text-center">
+                                <Instagram className="w-8 h-8 text-white mx-auto mb-2" />
+                                <p className="text-white text-xs">View on Instagram</p>
+                              </div>
+                            ) : (
+                              <Play className="w-12 h-12 text-white" />
+                            )}
                           </div>
-                          <p className="text-white/80 text-xs">Click to view on Instagram</p>
                         </div>
-                      </div>
-                    ) : video.thumbnail_url ? (
-                      // Thumbnail with play button overlay
-                      <div className="relative w-full h-40 rounded-lg overflow-hidden cursor-pointer group/video" onClick={() => playVideo(video.video_url)}>
-                        <img 
-                          src={video.thumbnail_url} 
-                          alt={video.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
-                          <Play className="w-12 h-12 text-white" />
+                      ) : (
+                        // Gradient background with video icon
+                        <div className="w-full h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all duration-300 cursor-pointer relative overflow-hidden" onClick={() => playVideo(video.video_url)}>
+                          {/* Animated background pattern */}
+                          <div className="absolute inset-0 opacity-10">
+                            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 animate-pulse"></div>
+                            <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full animate-pulse delay-1000"></div>
+                          </div>
+                          
+                          <div className="relative z-10 text-center">
+                            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300">
+                              {isInstagram ? (
+                                <Instagram className="w-8 h-8 text-white" />
+                              ) : (
+                                <VideoIcon className="w-8 h-8 text-white" />
+                              )}
+                            </div>
+                            <p className="text-white/80 text-xs font-medium">
+                              {isInstagram ? 'Click to view on Instagram' : 'Click to play video'}
+                            </p>
+                          </div>
                         </div>
+                      )}
+                      
+                      <div className="absolute top-3 right-3 flex flex-col gap-2">
+                        <span className="px-2 py-1 bg-primary/20 text-primary text-xs rounded-full backdrop-blur">
+                          {video.genre}
+                        </span>
+                        <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full backdrop-blur">
+                          {video.date}
+                        </span>
                       </div>
-                    ) : (
-                      // Default play button
-                      <div className="w-full h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center group-hover:from-purple-500/30 group-hover:to-pink-500/30 transition-all duration-300 cursor-pointer" onClick={() => playVideo(video.video_url)}>
-                        <Play className="w-10 h-10 text-white/70 group-hover:text-white transition-colors" />
+                    </div>
+                    
+                    <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-primary transition-colors">
+                      {video.title}
+                    </h4>
+                    <p className="text-white/60 text-sm leading-relaxed">
+                      {video.description}
+                    </p>
+                    
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="flex items-center justify-between text-xs text-white/40">
+                        <span>Guitar Cover</span>
+                        <span>{new Date(video.upload_date).toLocaleDateString()}</span>
                       </div>
-                    )}
-                    <div className="absolute top-3 right-3 flex flex-col gap-2">
-                      <span className="px-2 py-1 bg-primary/20 text-primary text-xs rounded-full backdrop-blur">
-                        {video.genre}
-                      </span>
-                      <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full backdrop-blur">
-                        {video.date}
-                      </span>
                     </div>
-                  </div>
-                  
-                  <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-primary transition-colors">
-                    {video.title}
-                  </h4>
-                  <p className="text-white/60 text-sm leading-relaxed">
-                    {video.description}
-                  </p>
-                  
-                  <div className="mt-4 pt-4 border-t border-white/10">
-                    <div className="flex items-center justify-between text-xs text-white/40">
-                      <span>Guitar Cover</span>
-                      <span>{new Date(video.upload_date).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
         </div>
 
