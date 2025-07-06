@@ -428,7 +428,21 @@
                 return;
             }
 
+            showAlert('Testing database connection...', 'success');
+
             try {
+                // First test the database connection
+                const testResponse = await fetch('/api/test-admin');
+                const testData = await testResponse.json();
+                
+                if (!testData.success) {
+                    showAlert('Database connection failed: ' + testData.error, 'error');
+                    return;
+                }
+
+                console.log('Database test results:', testData);
+
+                // Check if admin user exists
                 const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -439,6 +453,7 @@
                 });
 
                 const data = await response.json();
+                console.log('Admin response:', data);
                 
                 if (data.success) {
                     currentAdminId = adminUserId;
@@ -450,10 +465,10 @@
                     loadAllInstructions();
                     loadAllRules();
                 } else {
-                    showAlert(data.error || 'Authentication failed', 'error');
+                    showAlert('Authentication failed: ' + (data.error || 'Unknown error'), 'error');
                 }
             } catch (error) {
-                showAlert('Error connecting to server', 'error');
+                showAlert('Error connecting to server: ' + error.message, 'error');
                 console.error('Auth error:', error);
             }
         }
@@ -503,10 +518,17 @@
             const instructionText = document.getElementById('instructionText').value.trim();
             const priority = parseInt(document.getElementById('priority').value);
 
+            if (!currentAdminId) {
+                showAlert('Please authenticate as admin first', 'error');
+                return;
+            }
+
             if (!targetUserId || !instructionText) {
                 showAlert('Please fill in all required fields', 'error');
                 return;
             }
+
+            console.log('Adding instruction with admin ID:', currentAdminId);
 
             try {
                 const response = await fetch('/api/admin', {
@@ -523,6 +545,7 @@
                 });
 
                 const data = await response.json();
+                console.log('Add instruction response:', data);
                 
                 if (data.success) {
                     showAlert('Special instruction added successfully!');
@@ -531,10 +554,10 @@
                     document.getElementById('priority').value = '1';
                     loadAllInstructions();
                 } else {
-                    showAlert(data.error || 'Failed to add instruction', 'error');
+                    showAlert('Failed to add instruction: ' + (data.error || 'Unknown error'), 'error');
                 }
             } catch (error) {
-                showAlert('Error connecting to server', 'error');
+                showAlert('Error connecting to server: ' + error.message, 'error');
                 console.error('Add instruction error:', error);
             }
         }
