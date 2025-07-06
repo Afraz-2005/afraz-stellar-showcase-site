@@ -18,6 +18,9 @@
     },
     "api/test-admin.js": {
       "maxDuration": 30
+    },
+    "api/simple-admin-test.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
@@ -52,6 +55,10 @@
     {
       "source": "/api/test-admin",
       "destination": "/api/test-admin.js"
+    },
+    {
+      "source": "/api/simple-admin-test",
+      "destination": "/api/simple-admin-test.js"
     }
   ],
   "headers": [
