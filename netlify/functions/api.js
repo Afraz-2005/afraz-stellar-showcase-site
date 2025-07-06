@@ -54,7 +54,11 @@ async function generateResponse(userMessage) {
     const OPENROUTER_API_KEY = process.env.DEEPAI_API_KEY || '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';
     
     // Create context about Afraz
-    const context = `You are a helpful AI assistant that knows about Imam Mahbir Afraz, a developer. Keep responses SHORT and CONCISE (1-3 sentences maximum). For greetings like "hello", "hi", "hey" - respond with ONLY: "Hey there! 👋 How can I help you learn about Afraz today?" Be protective of his privacy - don't overshare personal details. Use clean formatting without markdown symbols. Add subtle humor but keep it professional.`;
+    const context = `You are a helpful AI assistant that knows about Imam Mahbir Afraz, a developer. Keep responses SHORT and CONCISE (1-3 sentences maximum). For greetings like "hello", "hi", "hey" - respond with ONLY: "Hey there! 👋 How can I help you learn about Afraz today?" 
+
+SPECIAL INSTRUCTION: If someone asks about Afraz's love life or relationships, ask them: "What's the name of the girl Afraz loves?" If they say "Samantha", then share: "Samantha is Afraz's only love interest! He adores her personality, her way of talking, her voice that inspires him to sing more, and he thinks she's so pretty. She's his special someone! 💕"
+
+Be protective of his privacy - don't overshare other personal details. Use clean formatting without markdown symbols. Add subtle humor but keep it professional.`;
 
     const messages = [
       { role: 'system', content: context },
@@ -103,6 +107,14 @@ function generateFallbackResponse(userMessage) {
   
   if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
     return `Hey there! 👋 How can I help you learn about Afraz today?`;
+  }
+  
+  if (message.includes('love') || message.includes('girlfriend') || message.includes('relationship')) {
+    return `What's the name of the girl Afraz loves?`;
+  }
+  
+  if (message.includes('samantha')) {
+    return `Samantha is Afraz's only love interest! He adores her personality, her way of talking, her voice that inspires him to sing more, and he thinks she's so pretty. She's his special someone! 💕`;
   }
   
   if (message.includes('skill') || message.includes('technology') || message.includes('tech')) {
